@@ -15,7 +15,7 @@ src/app (routes), src/components, src/lib/{auth,db,storage,workbook,operations,a
 
 ## Current phase / task
 
-Phase 1, Milestone 1 (scaffold): DONE.
+Phase 1A Step 3 (landing page): DONE (visual match not screenshot-verified). Step 4 (Supabase auth): BLOCKED on user's Supabase credentials.
 
 ## Completed
 
@@ -49,3 +49,12 @@ None.
 ## Next
 
 Milestone 2: landing page.
+
+## Milestone 2: Landing page
+
+- Files: src/components/landing/{Logo,Header,Hero,Sections,Notice}.tsx, src/app/page.tsx, (legal)/privacy, (legal)/terms, sign-in & sign-up PLACEHOLDER pages (no auth), layout.tsx (Inter via @fontsource-variable/inter).
+- Deps added: @fontsource-variable/inter, lucide-react.
+- Deviations from reference: fake stats/testimonials/model badge removed; single $10/month plan, no toggle; unbuilt features labeled; no About/Blog/social links.
+- Checks run: lint, typecheck, vitest 1/1, prettier, build pass; prod server returns 200 for /, /privacy, /terms, /sign-in, /sign-up; anchors #features #how-it-works #pricing present.
+- NOT verified: visual fidelity, responsive layout in a browser, mobile menu interaction, keyboard/accessibility audit.
+- Auth: NOT implemented. Supabase NOT connected.
