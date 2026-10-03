@@ -24,7 +24,7 @@ Phase 1, Milestone 1 (scaffold): DONE.
 ## Tests run (actual)
 
 - lint: pass | typecheck: pass | vitest: 1/1 pass | prettier check: pass | npm audit (prod): 0 vulns
-- build: see latest result below.
+- build: pass; dev server: HTTP 200 on /
 
 ## Known limitations
 
