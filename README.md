@@ -1,36 +1,29 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ExcelAI
 
-## Getting Started
+AI-powered spreadsheet app (in development). Next.js 16 + TypeScript + Tailwind + Supabase.
 
-First, run the development server:
+## Setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. `npm install`
+2. Copy `.env.example` to `.env.local`; fill `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (publishable key). Never use the service_role key.
+3. Supabase Dashboard -> SQL Editor: paste and run `supabase/migrations/20261003000000_workbooks.sql`.
+4. Supabase -> Authentication -> URL Configuration: Site URL `http://localhost:3000`; Redirect URLs: `http://localhost:3000/**`.
+5. `npm run dev` and open http://localhost:3000.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Restart `npm run dev` after editing `.env.local` (NEXT_PUBLIC values are read at build/start).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Auth notes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Email confirmation ON (default): sign-up shows "check your email". Default email templates work as-is (PKCE `code` link).
+- Local email sending is rate-limited by Supabase's built-in mailer. For heavy testing, turn "Confirm email" off temporarily.
+- Reset flow: /forgot-password -> email link -> /auth/confirm -> /reset-password.
 
-## Learn More
+## Limits
 
-To learn more about Next.js, take a look at the following resources:
+Uploads: .xlsx and .csv, max 5 MB (private `workbooks` bucket, enforced in client, server, and bucket settings).
+Uploaded files are stored only. They are not parsed or editable yet.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Checks
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`npm run lint && npm run typecheck && npm test && npm run build`
+Live ownership tests: set TEST_USER_A/B vars in `.env.local` (two confirmed accounts), then `npm test`.
