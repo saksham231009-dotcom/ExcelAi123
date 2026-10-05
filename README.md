@@ -25,5 +25,7 @@ Uploaded files are stored only. They are not parsed or editable yet.
 
 ## Checks
 
+**First, run `npm run check`** (tests your `.env.local` and database; prints PASS/FAIL only, never keys).
+
 `npm run lint && npm run typecheck && npm test && npm run build`
 Live ownership tests: set TEST_USER_A/B vars in `.env.local` (two confirmed accounts), then `npm test`.
