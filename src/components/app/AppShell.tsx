@@ -89,6 +89,8 @@ export function AppShell({
 }) {
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState(false);
+  const path = usePathname();
+  const inWorkspace = path.startsWith("/workspace");
   const name = email.split("@")[0];
   return (
     <div className="flex min-h-screen bg-white text-neutral-950">
@@ -134,23 +136,25 @@ export function AppShell({
           >
             <Menu size={22} />
           </button>
-          <form
-            action="/dashboard"
-            role="search"
-            className="relative max-w-xl flex-1"
-          >
-            <Search
-              size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500"
-              aria-hidden
-            />
-            <input
-              name="q"
-              aria-label="Search workbooks"
-              placeholder="Search your workbooks…"
-              className="w-full rounded-lg border border-neutral-200 py-2 pl-9 pr-3 text-sm outline-none focus:border-neutral-950"
-            />
-          </form>
+          {!inWorkspace && (
+            <form
+              action="/dashboard"
+              role="search"
+              className="relative max-w-xl flex-1"
+            >
+              <Search
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500"
+                aria-hidden
+              />
+              <input
+                name="q"
+                aria-label="Search workbooks"
+                placeholder="Search your workbooks…"
+                className="w-full rounded-lg border border-neutral-200 py-2 pl-9 pr-3 text-sm outline-none focus:border-neutral-950"
+              />
+            </form>
+          )}
           <div className="relative ml-auto">
             <button
               onClick={() => setMenu(!menu)}
@@ -186,7 +190,9 @@ export function AppShell({
             )}
           </div>
         </header>
-        <div className="flex-1 px-4 py-8 sm:px-8">{children}</div>
+        <div className={inWorkspace ? "flex-1" : "flex-1 px-4 py-8 sm:px-8"}>
+          {children}
+        </div>
       </div>
     </div>
   );

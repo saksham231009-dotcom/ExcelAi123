@@ -84,3 +84,20 @@ Env vars: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY (+ optional TE
 ## Next
 
 Run live verification checklist (README + chat), fix any defects, then Milestone 4: workbook parsing + editable grid.
+
+## Milestone 4: Univer workspace + AI operations (Phase 1C)
+
+Architecture: Univer 1.0.3 (`@univerjs/presets` + `preset-sheets-core`, open-source core) renders the editable grid. The live sheet is stored as a Univer snapshot (jsonb `workbooks.snapshot`, `snapshot_version` for conflict detection) under the existing owner-only RLS. First open of an uploaded XLSX/CSV imports it server-side (ExcelJS/PapaParse) into a snapshot; blank workbooks get an empty Sheet1. Autosave: debounced 1.5 s, direct Supabase update with version check, 4 MB cap, beforeunload warning, retry on error. Export: /api/workbooks/[id]/export builds .xlsx (values + formulas, no styles) from the last saved state.
+AI: client builds a compact context (sheet names, dims, headers, types, blank counts, <=4 clipped sample rows for the active sheet only; test shows 20k-row sheet -> <2 KB). POST /api/ai/plan (auth + ownership check + rate limit + 45 s timeout) calls OpenAI chat completions (json_object) and validates the reply with a strict zod schema (19 operations, max 6 per plan). The AI never executes anything. The client re-validates, dry-runs the plan in a pure engine (src/lib/operations/engine.ts), shows a confirm card for destructive plans (delete rows/cols/sheets, clear, remove duplicates, big overwrites), applies effects through Univer's own API, re-reads the sheet and compares with the simulated expected result (verifyModels). Chat reports only engine-computed summaries and results. "Undo last AI change" restores a pre-change snapshot.
+Operations: set_cells, add_column, rename_column, delete_columns, insert_rows, delete_rows, clear_range, sort, remove_duplicates, find_replace, fill_blanks, clean_text, format, highlight, create/rename/delete_sheet, query (top_n/sum/avg/min/max/count/summary, group_by, optional write to new sheet). Not supported yet: move/copy ranges, true conditional-formatting rules, merge/unmerge, charts, sorting ranges that contain formulas (refused), importing styles/dates as dates.
+New files: src/lib/operations/{schema,engine}.ts, src/lib/ai/{context,prompt}.ts, src/lib/workbooks/{snapshot,import,load}.ts, src/components/workspace/*, src/app/api/ai/plan/route.ts, src/app/api/workbooks/[id]/export/route.ts, supabase/migrations/20261004000000_workbook_snapshot.sql, tests/unit/{engine,import,context}.test.ts. Changed: workspace page, AppShell, scripts/check-supabase.mjs.
+Deps added: @univerjs/presets, @univerjs/preset-sheets-core, exceljs, papaparse.
+Env vars: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY (public); OPENAI_API_KEY, OPENAI_MODEL (server-only).
+
+### Tests actually run (sandbox)
+
+lint, typecheck, prettier, production build: pass. Vitest: 39 passed, 9 skipped (RLS tests need two real accounts). Covered: 21 engine tests (dedupe, sort, formulas, queries, verification, schema rejection), real XLSX/CSV import incl. corrupted file, context size. Smoke (curl): /api/ai/plan and export return 401 without a session, bad id 404, /workspace redirects to sign-in. No secrets in client bundle.
+
+### NOT run (cannot be run in the sandbox)
+
+Univer in a real browser (rendering, editing, facade calls, undo, restore), autosave to Supabase, XLSX open from real storage, OpenAI calls, export download, any live auth/RLS flow, responsive/visual match to reference. The Univer facade calls are type-checked against the installed 1.0.3 types but have never executed.
