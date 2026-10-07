@@ -4,45 +4,37 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   ChevronDown,
+  CreditCard,
   FolderOpen,
-  Globe,
+  HelpCircle,
   Home,
   LayoutGrid,
   Menu,
   Search,
   Settings,
-  Sparkles,
-  Download,
-  BarChart3,
-  FileText,
-  CreditCard,
   X,
 } from "lucide-react";
 import { signOutAction } from "@/app/(auth)/actions";
+import { APP_NAV, isActive } from "@/lib/nav";
 
-const main = [
-  { label: "Dashboard", href: "/dashboard", icon: Home },
-  { label: "My Workbooks", href: "/dashboard#workbooks", icon: FolderOpen },
-];
-const soon = [
-  { label: "Files & Documents", icon: FileText },
-  { label: "Web Scraping", icon: Globe },
-  { label: "Data Extraction", icon: Download },
-  { label: "Analytics & Dashboards", icon: BarChart3 },
-  { label: "AI Assistant", icon: Sparkles },
-  { label: "Billing & Subscription", icon: CreditCard },
-  { label: "Settings", icon: Settings },
-];
+const ICONS: Record<string, typeof Home> = {
+  "/dashboard": Home,
+  "/workbooks": FolderOpen,
+  "/billing": CreditCard,
+  "/settings": Settings,
+  "/help": HelpCircle,
+};
 
 function Nav({ onNavigate }: { onNavigate?: () => void }) {
   const path = usePathname();
   return (
     <nav className="flex flex-col gap-1 px-3" aria-label="App">
-      {main.map(({ label, href, icon: Icon }) => {
-        const active = label === "Dashboard" && path === "/dashboard";
+      {APP_NAV.map(({ label, href }) => {
+        const Icon = ICONS[href];
+        const active = isActive(path, href);
         return (
           <Link
-            key={label}
+            key={href}
             href={href}
             onClick={onNavigate}
             aria-current={active ? "page" : undefined}
@@ -53,17 +45,6 @@ function Nav({ onNavigate }: { onNavigate?: () => void }) {
           </Link>
         );
       })}
-      {soon.map(({ label, icon: Icon }) => (
-        <span
-          key={label}
-          aria-disabled="true"
-          className="flex cursor-not-allowed items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-neutral-400"
-        >
-          <Icon size={18} />
-          {label}
-          <span className="ml-auto text-[10px]">Soon</span>
-        </span>
-      ))}
     </nav>
   );
 }
@@ -97,10 +78,15 @@ export function AppShell({
       <aside className="hidden w-64 shrink-0 flex-col border-r border-neutral-200 bg-neutral-50/60 lg:flex">
         <Brand />
         <Nav />
-        <div className="mt-auto m-4 rounded-lg border border-neutral-200 bg-white p-3 text-xs">
+        <div className="m-4 mt-auto rounded-lg border border-neutral-200 bg-white p-3 text-xs">
           <p className="text-neutral-500">Plan</p>
           <p className="mt-0.5 text-sm font-medium">Development account</p>
-          <p className="mt-1 text-neutral-500">Billing is not enabled yet.</p>
+          <Link
+            href="/billing"
+            className="mt-1 inline-block text-neutral-500 underline"
+          >
+            Billing isn&apos;t enabled yet
+          </Link>
         </div>
       </aside>
       {open && (
@@ -138,7 +124,7 @@ export function AppShell({
           </button>
           {!inWorkspace && (
             <form
-              action="/dashboard"
+              action="/workbooks"
               role="search"
               className="relative max-w-xl flex-1"
             >
@@ -178,6 +164,14 @@ export function AppShell({
                 <p className="truncate px-3 py-2 text-xs text-neutral-500">
                   {email}
                 </p>
+                <Link
+                  role="menuitem"
+                  href="/settings"
+                  onClick={() => setMenu(false)}
+                  className="block rounded-md px-3 py-2 text-sm hover:bg-neutral-50"
+                >
+                  Settings
+                </Link>
                 <form action={signOutAction}>
                   <button
                     role="menuitem"

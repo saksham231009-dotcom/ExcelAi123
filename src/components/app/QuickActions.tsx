@@ -1,14 +1,7 @@
 "use client";
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import {
-  ChevronRight,
-  FilePlus,
-  Globe,
-  Sparkles,
-  Upload,
-  FileDown,
-} from "lucide-react";
+import { ChevronRight, FilePlus, Upload } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import {
   createBlankWorkbook,
@@ -141,24 +134,6 @@ export function QuickActions() {
           </span>
           <ChevronRight size={16} />
         </button>
-        {[
-          [Globe, "Web Scraping", "Planned"],
-          [FileDown, "Data Extraction", "Planned"],
-          [Sparkles, "AI Assistant", "In development"],
-        ].map(([I, t, s]) => {
-          const Icon = I as typeof Globe;
-          return (
-            <div
-              key={t as string}
-              aria-disabled="true"
-              className={`${row} cursor-not-allowed text-neutral-400`}
-            >
-              <Icon size={20} />
-              <span className="flex-1 text-sm">{t as string}</span>
-              <span className="text-xs">{s as string}</span>
-            </div>
-          );
-        })}
       </div>
       {status && (
         <p

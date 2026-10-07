@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import {
+  changePasswordAction,
   forgotPasswordAction,
   resetPasswordAction,
   signInAction,
@@ -182,6 +183,38 @@ export function ResetForm() {
       />
       <Submit pending={f.pending}>
         {f.pending ? "Saving…" : "Set new password"}
+      </Submit>
+    </form>
+  );
+}
+
+export function ChangePasswordForm() {
+  const f = useAuthForm(changePasswordAction, resetSchema);
+  return (
+    <form
+      action={f.formAction}
+      onSubmit={f.onSubmit}
+      noValidate
+      className="max-w-sm space-y-4"
+    >
+      {f.state.error && <Banner kind="error">{f.state.error}</Banner>}
+      {f.state.message && <Banner kind="success">{f.state.message}</Banner>}
+      <Field
+        label="New password"
+        name="password"
+        type="password"
+        autoComplete="new-password"
+        error={f.errors.password}
+      />
+      <Field
+        label="Confirm new password"
+        name="confirmPassword"
+        type="password"
+        autoComplete="new-password"
+        error={f.errors.confirmPassword}
+      />
+      <Submit pending={f.pending}>
+        {f.pending ? "Saving…" : "Change password"}
       </Submit>
     </form>
   );

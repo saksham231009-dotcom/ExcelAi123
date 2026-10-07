@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { logError } from "@/lib/log";
 import { createClient } from "@/lib/supabase/server";
 import {
   BUCKET,
@@ -38,8 +39,10 @@ export async function createBlankWorkbook(): Promise<Result> {
     })
     .select("id")
     .single();
-  if (error || !data)
+  if (error || !data) {
+    logError("workbook.create", error);
     return FAIL("Couldn't create the workbook. Please try again.");
+  }
   revalidatePath("/dashboard");
   return { ok: true, id: data.id };
 }
@@ -82,6 +85,7 @@ export async function registerUpload(input: unknown): Promise<Result> {
     size_bytes: size,
   });
   if (error) {
+    logError("workbook.register", error);
     await cleanup(); // avoid orphaned files
     return FAIL(
       "Couldn't save the workbook. The upload was discarded. Please try again.",
@@ -105,7 +109,10 @@ export async function renameWorkbook(
     .update({ name })
     .eq("id", id)
     .select("id");
-  if (error) return FAIL("Couldn't rename the workbook. Please try again.");
+  if (error) {
+    logError("workbook.rename", error);
+    return FAIL("Couldn't rename the workbook. Please try again.");
+  }
   if (!data?.length) return FAIL("Workbook not found.");
   revalidatePath("/dashboard");
   return { ok: true };

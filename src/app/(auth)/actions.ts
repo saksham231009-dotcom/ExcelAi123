@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { CONFIG_ERROR, NETWORK_ERROR, mapAuthError } from "@/lib/auth/errors";
+import { logError } from "@/lib/log";
 import { safeNext } from "@/lib/auth/redirect";
 import {
   forgotSchema,
@@ -43,8 +44,12 @@ export async function signInAction(
   if (!supabase) return { error: CONFIG_ERROR };
   try {
     const { error } = await supabase.auth.signInWithPassword(v.data);
-    if (error) return { error: mapAuthError(error) };
-  } catch {
+    if (error) {
+      logError("auth", error);
+      return { error: mapAuthError(error) };
+    }
+  } catch (e) {
+    logError("auth.network", e);
     return { error: NETWORK_ERROR };
   }
   redirect(safeNext(String(fd.get("next") ?? "")));
@@ -67,12 +72,16 @@ export async function signUpAction(
         emailRedirectTo: `${await siteUrl()}/auth/confirm?next=/dashboard`,
       },
     });
-    if (error) return { error: mapAuthError(error) };
+    if (error) {
+      logError("auth", error);
+      return { error: mapAuthError(error) };
+    }
     // With email confirmation on, an existing email returns a user with no identities.
     if (data.user && data.user.identities?.length === 0)
       return { error: mapAuthError({ code: "user_already_exists" }) };
     hasSession = !!data.session;
-  } catch {
+  } catch (e) {
+    logError("auth.network", e);
     return { error: NETWORK_ERROR };
   }
   if (hasSession) redirect("/dashboard");
@@ -102,7 +111,8 @@ export async function forgotPasswordAction(
     ) {
       return { error: mapAuthError(error) };
     }
-  } catch {
+  } catch (e) {
+    logError("auth.network", e);
     return { error: NETWORK_ERROR };
   }
   // Same message whether or not the account exists (prevents account enumeration).
@@ -126,12 +136,42 @@ export async function resetPasswordAction(
     const { error } = await supabase.auth.updateUser({
       password: v.data.password,
     });
-    if (error) return { error: mapAuthError(error) };
+    if (error) {
+      logError("auth", error);
+      return { error: mapAuthError(error) };
+    }
     await supabase.auth.signOut();
-  } catch {
+  } catch (e) {
+    logError("auth.network", e);
     return { error: NETWORK_ERROR };
   }
   redirect("/sign-in?notice=password_updated");
+}
+
+export async function changePasswordAction(
+  _prev: FormState,
+  fd: FormData,
+): Promise<FormState> {
+  const v = validate(resetSchema, formToObject(fd));
+  if (!v.ok) return { fieldErrors: v.errors };
+  const supabase = await client();
+  if (!supabase) return { error: CONFIG_ERROR };
+  try {
+    const { data } = await supabase.auth.getUser();
+    if (!data.user)
+      return { error: mapAuthError({ code: "session_not_found" }) };
+    const { error } = await supabase.auth.updateUser({
+      password: v.data.password,
+    });
+    if (error) {
+      logError("auth", error);
+      return { error: mapAuthError(error) };
+    }
+  } catch (e) {
+    logError("auth.network", e);
+    return { error: NETWORK_ERROR };
+  }
+  return { message: "Password updated." };
 }
 
 export async function signOutAction() {

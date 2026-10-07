@@ -1,7 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/proxy";
 
-const PROTECTED = ["/dashboard", "/workspace"];
+const PROTECTED = [
+  "/dashboard",
+  "/workbooks",
+  "/workspace",
+  "/settings",
+  "/billing",
+  "/help",
+];
 const GUEST_ONLY = ["/sign-in", "/sign-up", "/forgot-password"];
 const matches = (path: string, list: string[]) =>
   list.some((p) => path === p || path.startsWith(`${p}/`));
@@ -32,7 +39,11 @@ export async function proxy(request: NextRequest) {
 export const config = {
   matcher: [
     "/dashboard/:path*",
+    "/workbooks/:path*",
     "/workspace/:path*",
+    "/settings/:path*",
+    "/billing/:path*",
+    "/help/:path*",
     "/sign-in",
     "/sign-up",
     "/forgot-password",

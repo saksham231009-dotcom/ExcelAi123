@@ -37,6 +37,8 @@ export function mapAuthError(err: AuthLikeError | null | undefined): string {
     case "bad_jwt":
       return "Your session has expired. Sign in again.";
     default:
-      return "Something went wrong. Please try again.";
+      return err.code
+        ? `Something went wrong (${err.code}). Please try again.`
+        : "Something went wrong. Please try again.";
   }
 }

@@ -101,3 +101,21 @@ lint, typecheck, prettier, production build: pass. Vitest: 39 passed, 9 skipped 
 ### NOT run (cannot be run in the sandbox)
 
 Univer in a real browser (rendering, editing, facade calls, undo, restore), autosave to Supabase, XLSX open from real storage, OpenAI calls, export download, any live auth/RLS flow, responsive/visual match to reference. The Univer facade calls are type-checked against the installed 1.0.3 types but have never executed.
+
+## Milestone 5: Integration phase (Phase 1D)
+
+Pages now present (all linked from nav, all behind server-side protection in src/proxy.ts and the (app) layout): /dashboard (stats + recent), /workbooks (search, sort, create, upload, rename, delete), /workspace/[id], /settings (account, change password, data/AI note, sign out), /billing (plan + $10/month, display only), /help (guide + FAQ), plus public /, /privacy and /terms (drafts), auth pages. Sidebar contains only working links. Disabled "Soon" items and fake quick actions were removed.
+Hardening: security headers (nosniff, frame deny, referrer, permissions), snapshot size CHECK (migration 20261005), server-side error logging with codes only (src/lib/log.ts), visible error codes for unknown auth errors, error/loading/not-found boundaries, route-integrity tests (every nav item and every literal href/redirect resolves to a real route; no "#" links; OpenAI key never in client code), proxy-coverage test.
+Fixed during audit: new pages were missing from the proxy matcher (lost the return-to-page redirect); fixed and covered by a test.
+
+### Status
+
+WORKING (reported by the user): workspace opens and edits (user confirmed "Workspace works").
+WORKING (verified in sandbox): lint, typecheck, production build; 49 unit tests pass (engine, import, context, routes, proxy, auth helpers); unauthenticated requests to every protected page redirect to sign-in with ?next=; 404 page; security headers present; no secrets in client bundle or git.
+NOT VERIFIED (needs your Supabase/OpenAI, not possible in sandbox): real signup/verify/signin/reset flows, Supabase RLS cross-user test (tests/integration/rls.test.ts, 9 tests skipped until TEST_USER_* set), storage upload/delete against the real bucket, real OpenAI plans and full AI loop, export download, browser console/network inspection, responsive/visual checks on real devices, the 32-step end-to-end journey.
+NOT IMPLEMENTED: payments, Phase 2 operations (move/copy ranges, true conditional-formatting rules, merge cells, charts, forecasting, PDF/image/web import), support contact, finalized legal text, shared rate limiter, replacing a workbook's source file.
+Known: npm audit reports 2 moderate advisories via exceljs -> uuid (buffer bounds check when a caller passes its own buffer; ExcelJS does not do this with user input). Not force-fixed because the suggested fix downgrades exceljs to 3.4.0. Revisit in Phase 3.
+
+## Phase 2 remaining / Phase 3 remaining
+
+Phase 2: more operations, charts/dashboards, imports, forecasting. Phase 3: full E2E + load tests, rate limiting store, custom SMTP, payments, legal review, deployment.

@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { contextSchema } from "@/lib/ai/context";
 import { SYSTEM_PROMPT, buildUserPrompt } from "@/lib/ai/prompt";
+import { logError } from "@/lib/log";
 import { planSchema } from "@/lib/operations/schema";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
@@ -103,6 +104,7 @@ export async function POST(req: NextRequest) {
     return err("The AI service didn't respond in time. Try again.", 504);
   }
   if (!res.ok) {
+    logError("openai", { status: res.status });
     if (res.status === 401)
       return err(
         "The AI key is invalid. Check OPENAI_API_KEY on the server.",
