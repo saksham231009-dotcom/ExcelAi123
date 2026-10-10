@@ -1,0 +1,15 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version 1.0 Part 12 – API
+Integrations
+
+Purpose: Define all external services.
+
+APIs: - Supabase - DeepSeek Primary - DeepSeek Secondary - OpenRouter
+Fallback - Stripe - Razorpay - PayPal - Resend - Future: Google OAuth,
+Microsoft OAuth
+
+Requirements: - Secure environment variables - Retry logic - Logging -
+Rate limiting - Graceful failures
+
+Acceptance: All integrations configurable without code changes.
+
+End of PRD Part 12.

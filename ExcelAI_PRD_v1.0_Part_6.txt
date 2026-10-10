@@ -1,0 +1,86 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version: 1.0 Part 6 –
+Dashboard Module Specification
+
+1.  PURPOSE The Dashboard is the user’s home after login. It must
+    provide immediate access to files, actions and insights.
+
+2.  PRIMARY GOALS
+
+-   Resume work quickly
+-   Upload new files
+-   Open recent work
+-   View account summary
+-   Access every major module
+
+3.  LAYOUT Top Navigation:
+
+-   ExcelAI Logo
+-   Search (future-ready)
+-   Upgrade Button
+-   Profile Menu
+
+Left Sidebar: - Dashboard - Recent Files - Folders - Favorites - Trash -
+Settings - Help
+
+Main Area: - Welcome Section - Quick Actions - Recent Files -
+Statistics - Recent Activity - Templates (future)
+
+4.  WELCOME SECTION Dynamic greeting based on local time. Short
+    productivity message.
+
+5.  QUICK ACTIONS Cards:
+
+-   Upload Excel
+-   Upload CSV
+-   Upload PDF
+-   Upload Image
+-   Create Blank Workbook
+
+6.  RECENT FILES Display:
+
+-   File Name
+-   Type
+-   Last Modified
+-   Favorite
+-   Open
+-   Rename
+-   Delete
+
+Support list and grid views.
+
+7.  STATISTICS Cards:
+
+-   Total Files
+-   Storage Used
+-   AI Conversations
+-   Exports
+
+8.  RECENT ACTIVITY Timeline of:
+
+-   Uploads
+-   AI actions
+-   Renames
+-   Deletes
+-   Exports
+
+9.  EMPTY STATE Illustration. Primary Upload button. Helpful onboarding
+    text.
+
+10. SEARCH Global dashboard search prepared for future implementation.
+
+11. RESPONSIVENESS Desktop, tablet and mobile support.
+
+12. PERFORMANCE Fast loading. Pagination for large file libraries. Lazy
+    loading where appropriate.
+
+13. ACCESSIBILITY Keyboard navigation. Visible focus. Readable contrast.
+
+14. ACCEPTANCE CRITERIA Users can:
+
+-   Upload a file
+-   Open recent work
+-   View statistics
+-   Navigate to all major modules
+-   Manage files quickly
+
+End of PRD Part 6.

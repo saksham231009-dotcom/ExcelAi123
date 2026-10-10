@@ -1,0 +1,68 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version: 1.0 Part 8 –
+Database, Storage & Backend Architecture
+
+1.  PURPOSE Define the backend foundation for ExcelAI using Supabase.
+
+2.  PLATFORM Backend: Supabase Database: PostgreSQL Authentication:
+    Supabase Auth Storage: Supabase Storage Hosting: Vercel
+
+3.  CORE TABLES
+
+-   users
+-   profiles
+-   workspaces
+-   files
+-   folders
+-   chats
+-   messages
+-   ai_jobs
+-   exports
+-   subscriptions
+-   payments
+-   activity_logs
+-   notifications
+-   settings
+
+4.  STORAGE BUCKETS
+
+-   workbooks
+-   pdfs
+-   images
+-   exports
+-   avatars
+
+5.  RELATIONSHIPS One User -> Many Workspaces -> Many Files -> Many
+    Chats -> Many Exports -> One Subscription
+
+One Workspace -> Many Chats -> Many AI Jobs
+
+6.  SECURITY
+
+-   Row Level Security enabled
+-   Least-privilege access
+-   Server-side validation
+-   Secrets never exposed to client
+-   Audit logging
+
+7.  BACKEND SERVICES AI Router File Processor Export Service
+    Notification Service Billing Service (future)
+
+8.  BACKUP & RECOVERY
+
+-   Automated database backups
+-   Soft delete for files
+-   Trash recovery
+-   Version history (future)
+
+9.  SCALABILITY Design for millions of users. Use pagination, indexes,
+    caching and asynchronous jobs where appropriate.
+
+10. ACCEPTANCE CRITERIA
+
+-   Secure authentication
+-   Reliable storage
+-   Protected user data
+-   Fast file retrieval
+-   Extensible schema
+
+End of PRD Part 8.

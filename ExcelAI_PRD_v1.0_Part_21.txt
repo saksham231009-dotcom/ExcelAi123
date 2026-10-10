@@ -1,0 +1,14 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version 1.0
+
+Part 21 – Database Schema
+
+Core Tables: users, profiles, workspaces, files, folders, chats,
+messages, ai_jobs, exports, subscriptions, payments, activity_logs,
+notifications, settings.
+
+Requirements: Indexes, foreign keys, RLS, timestamps, soft deletes where
+appropriate.
+
+Acceptance: Normalized scalable schema.
+
+End of PRD Part 21.

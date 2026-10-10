@@ -1,0 +1,92 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version: 1.0 Part 9 – AI
+Architecture & Intelligence Engine
+
+============================================================ 1. PURPOSE
+============================================================
+
+The AI Engine is the core intelligence of ExcelAI. Its purpose is to
+understand spreadsheets, assist users naturally, and safely perform
+spreadsheet operations.
+
+============================================================ 2. AI
+PROVIDERS ============================================================
+
+Primary Provider: - DeepSeek API Key 1
+
+Secondary Provider: - DeepSeek API Key 2
+
+Fallback Provider: - OpenRouter
+
+Routing Order: Primary → Secondary → OpenRouter
+
+If one provider fails due to timeout, quota or outage, automatically
+retry using the next provider.
+
+============================================================ 3. AI
+WORKFLOW ============================================================
+
+Upload File ↓ Extract Workbook Structure ↓ Analyze Data ↓ Generate
+Insights ↓ Generate Suggested Prompts ↓ Wait for User Request ↓ Execute
+Action ↓ Explain Changes ↓ Update Workbook
+
+============================================================ 4. AUTO
+ANALYSIS ============================================================
+
+AI should automatically detect: - Headers - Empty rows - Empty columns -
+Missing values - Duplicate records - Numeric columns - Currency -
+Dates - Categories - Tables - Outliers - Trends - Possible charts - Data
+quality issues
+
+============================================================ 5. RESPONSE
+STANDARDS ============================================================
+
+Responses must: - Use headings - Bullet points - Tables when useful -
+Short paragraphs - Action summaries
+
+Avoid one long paragraph.
+
+============================================================ 6. AI
+SAFETY ============================================================
+
+Never modify workbook automatically without user intent.
+
+Always explain: - What changed - Why it changed
+
+Support Undo for AI actions.
+
+============================================================ 7. CONTEXT
+============================================================
+
+Remember workbook context during the active chat.
+
+Use previous conversation to answer follow-up questions accurately.
+
+============================================================ 8. PROMPT
+SUGGESTIONS ============================================================
+
+Generate intelligent suggestions based on workbook content.
+
+Examples: - Create Dashboard - Find Missing Values - Clean Entire
+Sheet - Show Revenue Summary - Detect Duplicate Invoices
+
+============================================================ 9. ERROR
+HANDLING ============================================================
+
+If AI cannot complete a task: - Explain why - Suggest alternatives -
+Never invent spreadsheet values
+
+============================================================ 10. FUTURE
+EXPANSION ============================================================
+
+Support: - Multi-agent workflows - Voice commands - Scheduled AI
+reports - Team AI collaboration - Custom company AI assistants
+
+============================================================ 11.
+ACCEPTANCE CRITERIA
+============================================================
+
+The AI should: - Understand uploaded workbooks. - Produce accurate
+suggestions. - Respond professionally. - Edit spreadsheets safely. -
+Recover gracefully from provider failures.
+
+End of PRD Part 9.

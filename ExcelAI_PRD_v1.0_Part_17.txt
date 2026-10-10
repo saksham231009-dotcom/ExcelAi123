@@ -1,0 +1,14 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version 1.0
+
+Part 17 – Deployment & DevOps
+
+Platforms: - GitHub - Vercel - Supabase
+
+Environment: Development, Staging, Production.
+
+Requirements: Environment variables, CI/CD, automatic deployments,
+monitoring, backups, rollback strategy.
+
+Acceptance: One-click production deployment.
+
+End of PRD Part 17.

@@ -1,0 +1,94 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version: 1.0 Part 5 –
+Authentication System Specification
+
+1.  PURPOSE The authentication system must be secure, fast, intuitive
+    and scalable. It is the gateway to every ExcelAI feature.
+
+2.  AUTHENTICATION METHODS Current:
+
+-   Email & Password
+
+Future: - Google OAuth - Microsoft OAuth - GitHub OAuth
+
+3.  USER FLOW Visitor → Landing Page → Sign Up / Login → Email
+    Verification → Dashboard
+
+Returning User → Login → Dashboard
+
+4.  SIGN UP PAGE Fields:
+
+-   Full Name
+-   Email
+-   Password
+-   Confirm Password
+-   Terms & Conditions checkbox
+
+Buttons: - Create Account - Continue with Google (Coming Soon
+placeholder)
+
+Links: - Login - Privacy Policy - Terms - Disclaimer
+
+5.  LOGIN PAGE Fields:
+
+-   Email
+-   Password
+
+Options: - Remember Me - Forgot Password
+
+Buttons: - Login - Continue with Google (Placeholder)
+
+6.  PASSWORD RULES Minimum 8 characters. At least one uppercase letter.
+    At least one lowercase letter. At least one number. Special
+    character recommended.
+
+7.  EMAIL VERIFICATION Users must verify their email before accessing
+    protected features.
+
+8.  FORGOT PASSWORD Request reset email. Secure reset link. Create new
+    password.
+
+9.  SESSION MANAGEMENT Use secure Supabase authentication. Protected
+    routes. Automatic token refresh. Logout from all devices (future).
+
+10. SECURITY
+
+-   Rate limiting
+-   Server-side validation
+-   Never expose secrets
+-   HTTPS only
+-   Secure cookies
+-   Row Level Security
+
+11. ERROR STATES
+
+-   Invalid email
+-   Incorrect password
+-   Existing account
+-   Weak password
+-   Expired reset link
+-   Network failure
+
+12. LOADING STATES Show loading indicators on every authentication
+    request. Disable duplicate submissions.
+
+13. UI GUIDELINES White background. Black typography. Minimal layout.
+    Responsive. Accessible.
+
+14. FUTURE ENHANCEMENTS
+
+-   Two-Factor Authentication
+-   Magic Links
+-   Passkeys
+-   SSO
+-   Organization Accounts
+
+15. ACCEPTANCE CRITERIA Users can:
+
+-   Create account
+-   Verify email
+-   Login
+-   Reset password
+-   Logout securely
+-   Access protected dashboard after authentication only.
+
+End of PRD Part 5.

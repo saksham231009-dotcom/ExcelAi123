@@ -1,0 +1,18 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version 1.0
+
+Part 20 – Technical Architecture & Folder Structure
+
+Frontend: Next.js + TypeScript + Tailwind.
+
+Backend: Supabase.
+
+Spreadsheet: Univer.
+
+AI: DeepSeek + OpenRouter.
+
+Organize code into: app, components, lib, hooks, utils, types,
+constants, styles, assets.
+
+Acceptance: Clean modular architecture.
+
+End of PRD Part 20.

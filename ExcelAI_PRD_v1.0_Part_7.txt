@@ -1,0 +1,113 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version: 1.0 Part 7 – AI
+Workspace & Spreadsheet Experience
+
+============================================================ 1. PURPOSE
+============================================================
+
+The AI Workspace is the heart of ExcelAI. It combines a professional
+spreadsheet editor with an intelligent AI assistant. Users should feel
+like they are collaborating with an expert analyst rather than using a
+chatbot.
+
+============================================================ 2.
+WORKSPACE LAYOUT
+============================================================
+
+Top Toolbar - Back - Workbook Name - Undo - Redo - Save - Export - Share
+(future)
+
+Left AI Sidebar - Chat history - AI conversation - Suggested prompts -
+Prompt input fixed at bottom
+
+Center - Univer Spreadsheet (full native functionality)
+
+============================================================ 3. AI AUTO
+ANALYSIS ============================================================
+
+Immediately after a workbook is uploaded, the AI must automatically
+analyze:
+
+-   Headers
+-   Data types
+-   Missing values
+-   Duplicate rows
+-   Empty columns
+-   Trends
+-   Totals
+-   Date columns
+-   Currency columns
+-   Potential charts
+-   Data quality issues
+
+The AI performs this silently without asking the user.
+
+============================================================ 4.
+SUGGESTED PROMPTS
+============================================================
+
+After analysis, AI generates context-aware suggestions such as:
+
+-   Show revenue summary
+-   Find duplicate invoices
+-   Clean missing values
+-   Create dashboard
+-   Build sales chart
+-   Highlight top customers
+
+Suggestions appear ONLY above the prompt input inside the AI sidebar.
+
+============================================================ 5. CHAT
+EXPERIENCE ============================================================
+
+-   Prompt input fixed at bottom.
+-   Messages scroll upward.
+-   Auto-scroll to newest response.
+-   Responses use headings, bullets, tables and summaries.
+-   Never respond in one long paragraph.
+
+============================================================ 6. AI
+EDITING RULES
+============================================================
+
+AI edits the actual spreadsheet only after receiving a user request.
+
+Every edit must include: - What changed - Why it changed - Undo support
+
+============================================================ 7. NATIVE
+SPREADSHEET SUPPORT
+============================================================
+
+Users must retain access to all Univer features: - Cell editing -
+Formulas - Formatting - Filters - Sorting - Freeze panes - Copy/Paste -
+Keyboard shortcuts
+
+AI enhances the spreadsheet but never replaces native editing.
+
+============================================================ 8. SPECIAL
+AI FEATURES ============================================================
+
+-   Clean Entire Sheet
+-   Formula Generator
+-   Formula Explanation
+-   Chart Creation
+-   Dashboard Creation
+-   PDF → Excel
+-   Image → Excel
+-   Duplicate Finder
+-   Forecasting
+-   Data Insights
+
+============================================================ 9. EXPORTS
+============================================================
+
+Support: - XLSX - CSV - PDF - DOCX - PPTX - PNG
+
+============================================================ 10.
+ACCEPTANCE CRITERIA
+============================================================
+
+Users can: - Upload a workbook. - Receive automatic AI insights. - Use
+suggested prompts. - Chat naturally. - Edit sheets with AI. - Continue
+manual editing. - Export results.
+
+End of PRD Part 7.

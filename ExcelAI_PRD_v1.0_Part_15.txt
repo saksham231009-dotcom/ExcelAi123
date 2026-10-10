@@ -1,0 +1,12 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version 1.0 Part 15 –
+Security, Privacy & Compliance
+
+Requirements: - HTTPS - Row Level Security - Secure cookies -
+Server-side validation - Encryption in transit - Secrets in environment
+variables only - Audit logs
+
+Compliance Goals: - Privacy-first - GDPR-ready - Data minimization
+
+Acceptance: User data remains isolated and protected.
+
+End of PRD Part 15.

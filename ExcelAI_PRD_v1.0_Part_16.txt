@@ -1,0 +1,12 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version 1.0 Part 16 – Legal
+Documents
+
+Required Pages: - Privacy Policy - Terms & Conditions - Disclaimer -
+Refund Policy - Cookie Policy - Contact
+
+Requirements: Professional language. Easy navigation. Linked from footer
+and authentication pages.
+
+Acceptance: Legal pages available before public launch.
+
+End of PRD Part 16.

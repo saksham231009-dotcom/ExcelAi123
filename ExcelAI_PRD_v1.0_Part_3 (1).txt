@@ -1,0 +1,134 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version: 1.0 Part 3 –
+Complete Design System & UI/UX Guidelines
+
+============================================================ 1. DESIGN
+PHILOSOPHY ============================================================
+
+ExcelAI must feel premium, modern, minimal, and trustworthy.
+
+Inspirations: - Apple - Linear - Notion - ChatGPT - Vercel - Stripe
+Dashboard
+
+The interface should maximize focus on user productivity.
+
+============================================================ 2. COLOR
+SYSTEM ============================================================
+
+Primary Background: White (#FFFFFF)
+
+Primary Text: Black (#111111)
+
+Secondary Text: Gray (#6B7280)
+
+Borders: Light Gray (#E5E7EB)
+
+Cards: White with subtle borders
+
+Primary Button: Black background White text
+
+Secondary Button: White background Black text Gray border
+
+Error: Red
+
+Success: Green
+
+Warning: Amber
+
+No colorful gradients. No unnecessary visual noise.
+
+============================================================ 3.
+TYPOGRAPHY ============================================================
+
+Professional modern sans-serif font.
+
+Clear hierarchy: - Display - H1 - H2 - H3 - Body - Caption
+
+Readable spacing.
+
+============================================================ 4. SPACING
+SYSTEM ============================================================
+
+Use an 8px spacing grid.
+
+Consistent padding and margins.
+
+Large whitespace between sections.
+
+============================================================ 5.
+ICONOGRAPHY ============================================================
+
+Use Lucide Icons.
+
+Icons should be simple, consistent, and monochrome.
+
+============================================================ 6.
+COMPONENT RULES
+============================================================
+
+Buttons: - Rounded corners - Smooth hover - Loading state - Disabled
+state
+
+Cards: - Minimal shadow - Thin borders - Consistent padding
+
+Tables: - Sticky headers - Responsive - Search-ready
+
+Inputs: - Clear labels - Helpful placeholders - Validation messages
+
+============================================================ 7. LAYOUT
+============================================================
+
+Top Navigation: - Logo - Search (future) - Upgrade - Notifications
+(future) - Profile
+
+Left Sidebar: - Dashboard - Recent - Folders - Favorites - Trash -
+Settings - Help
+
+Main Workspace: Flexible content area.
+
+============================================================ 8.
+RESPONSIVENESS
+============================================================
+
+Desktop Tablet Mobile
+
+No horizontal scrolling.
+
+============================================================ 9.
+ANIMATIONS ============================================================
+
+Fast.
+
+Subtle.
+
+Professional.
+
+Avoid distracting animations.
+
+============================================================ 10.
+ACCESSIBILITY
+============================================================
+
+Keyboard navigation.
+
+High contrast.
+
+Visible focus states.
+
+ARIA-friendly components where applicable.
+
+============================================================ 11. DESIGN
+PRINCIPLES ============================================================
+
+Every page must answer:
+
+What can the user do here?
+
+Everything should be obvious.
+
+Reduce clicks.
+
+Never overwhelm users.
+
+Prioritize clarity over decoration.
+
+End of PRD Part 3.

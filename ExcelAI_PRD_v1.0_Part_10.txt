@@ -1,0 +1,48 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version: 1.0 Part 10 –
+Pricing, Billing & Subscription System
+
+1.  PURPOSE Define the complete monetization system for ExcelAI.
+
+2.  PLANS FREE PRO Future: TEAM, ENTERPRISE
+
+3.  PAYMENT PROVIDERS
+
+-   Stripe (Global)
+-   Razorpay (India)
+-   PayPal (International)
+-   Future: Bank Transfer (placeholder for owner’s bank account)
+
+4.  BILLING FLOW Pricing Page -> Select Plan -> Select Provider ->
+    Secure Checkout -> Payment Success -> Subscription Activated
+
+5.  BILLING PAGE
+
+-   Current Plan
+-   Renewal Date
+-   Billing History
+-   Download Invoice
+-   Upgrade
+-   Cancel Subscription
+
+6.  INVOICES Invoice Number Customer Amount Tax Provider Download PDF
+
+7.  SECURITY Never store card numbers or CVV. Use official provider APIs
+    only.
+
+8.  FUTURE FEATURES Coupons Promo Codes Referral Rewards Student
+    Discounts Gift Plans
+
+9.  ADMIN Revenue Dashboard Payments Refund Requests Subscription
+    Management
+
+10. ACCEPTANCE CRITERIA Users can:
+
+-   Purchase
+-   Upgrade
+-   Downgrade
+-   Cancel
+-   Download invoices
+-   View billing history
+-   Pay using Stripe, Razorpay and PayPal
+
+End of PRD Part 10.

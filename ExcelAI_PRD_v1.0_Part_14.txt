@@ -1,0 +1,13 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version 1.0 Part 14 – AI
+Features Specification
+
+Core Features: - Auto Analysis - Clean Entire Sheet - Formula
+Generator - Formula Explainer - Dashboard Generator - Chart Generator -
+Duplicate Finder - Missing Value Detection - Forecasting - Natural
+Language Editing
+
+Rules: Explain every change. Support Undo. Never invent data.
+
+Acceptance: AI actions are accurate, transparent and reversible.
+
+End of PRD Part 14.

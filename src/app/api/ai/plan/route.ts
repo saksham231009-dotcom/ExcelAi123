@@ -84,9 +84,12 @@ export async function POST(req: NextRequest) {
     { role: "user", content: buildUserPrompt(body.message, body.context) },
   ];
 
+  const baseUrl = (
+    process.env.OPENAI_BASE_URL ?? "https://api.openai.com/v1"
+  ).replace(/\/+$/, "");
   let res: Response;
   try {
-    res = await fetch("https://api.openai.com/v1/chat/completions", {
+    res = await fetch(`${baseUrl}/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -96,7 +99,7 @@ export async function POST(req: NextRequest) {
         model,
         messages,
         response_format: { type: "json_object" },
-        max_completion_tokens: 1500,
+        max_completion_tokens: 4000,
       }),
       signal: AbortSignal.timeout(45_000),
     });

@@ -1,0 +1,98 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version: 1.0 Part 4 –
+Landing Page Specification
+
+============================================================ 1. PURPOSE
+============================================================
+
+The landing page is the first impression of ExcelAI.
+
+Objectives: - Explain the product within 10 seconds. - Demonstrate value
+before asking users to sign up. - Maximize visitor-to-user conversion. -
+Build trust through clarity and professionalism.
+
+============================================================ 2. TARGET
+AUDIENCE ============================================================
+
+Students Business Owners Accountants Data Analysts Teachers Freelancers
+Enterprise Teams
+
+============================================================ 3.
+NAVIGATION BAR
+============================================================
+
+Left: - ExcelAI Logo
+
+Center: - Features - Pricing - FAQ - About
+
+Right: - Login - Get Started (Primary CTA)
+
+Sticky navigation with subtle border.
+
+============================================================ 4. HERO
+SECTION ============================================================
+
+Headline: “Talk to Your Spreadsheet. Let AI Do the Work.”
+
+Supporting text: Explain that users can upload Excel, CSV, PDF or Images
+and work naturally with AI.
+
+Primary CTA: Get Started Free
+
+Secondary CTA: Watch Demo (future)
+
+Hero visual: Professional mockup of ExcelAI workspace.
+
+============================================================ 5. FEATURES
+SECTION ============================================================
+
+Cards describing: - AI Spreadsheet Chat - Auto Analysis - PDF → Excel -
+Image → Excel - Formula Generator - Clean Entire Sheet - Dashboard &
+Charts - Native Spreadsheet Editing
+
+============================================================ 6. HOW IT
+WORKS ============================================================
+
+Step 1: Upload Step 2: AI Analyzes Automatically Step 3: Chat Naturally
+Step 4: Export Results
+
+============================================================ 7. SOCIAL
+PROOF (FUTURE)
+============================================================
+
+Customer testimonials Usage statistics Partner logos
+
+============================================================ 8. PRICING
+PREVIEW ============================================================
+
+Free Pro
+
+Button: View Full Pricing
+
+============================================================ 9. FAQ
+============================================================
+
+Collapsible questions covering uploads, AI, pricing, security and
+exports.
+
+============================================================ 10. FOOTER
+============================================================
+
+Links: About Features Pricing Privacy Policy Terms & Conditions
+Disclaimer Refund Policy Contact
+
+Social links placeholder.
+
+============================================================ 11. DESIGN
+RULES ============================================================
+
+White background Black typography Minimal design Large whitespace
+Professional illustrations Fast loading Responsive on all devices
+
+============================================================ 12.
+ACCEPTANCE CRITERIA
+============================================================
+
+A first-time visitor should understand: - What ExcelAI does. - Why it is
+different. - How it works. - How to get started. - Where to learn more.
+
+End of PRD Part 4.

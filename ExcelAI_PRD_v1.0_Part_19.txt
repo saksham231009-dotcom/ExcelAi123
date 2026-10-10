@@ -1,0 +1,17 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version 1.0
+
+Part 19 – Product Roadmap
+
+V1: Core AI Spreadsheet Workspace.
+
+V2: Teams, collaboration, sharing.
+
+V3: Automation workflows.
+
+V4: Enterprise features and APIs.
+
+V5: AI ecosystem with documents, presentations and databases.
+
+Acceptance: Roadmap reviewed each release.
+
+End of PRD Part 19.

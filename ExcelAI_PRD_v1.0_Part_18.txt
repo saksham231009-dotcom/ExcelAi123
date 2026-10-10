@@ -1,0 +1,12 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version 1.0
+
+Part 18 – QA, Testing & Acceptance
+
+Testing: - Unit - Integration - End-to-End - UI - Performance - Security
+
+Verify uploads, AI, exports, authentication, payments and responsive
+layouts.
+
+Acceptance: Critical flows pass before release.
+
+End of PRD Part 18.

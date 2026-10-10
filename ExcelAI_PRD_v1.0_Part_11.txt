@@ -1,0 +1,39 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version 1.0 Part 11 – Admin
+Panel & System Management
+
+1.  PURPOSE Provide administrators complete control over the ExcelAI
+    platform.
+
+2.  DASHBOARD
+
+-   Total Users
+-   Active Users
+-   Revenue
+-   New Signups
+-   AI Requests
+-   Storage Usage
+
+3.  USER MANAGEMENT Search, filter, suspend, activate, reset password,
+    manage subscriptions.
+
+4.  SUBSCRIPTIONS View Free/Pro users, upgrades, renewals, cancellations
+    and refunds.
+
+5.  AI MONITORING Provider usage, token consumption, failed requests,
+    latency.
+
+6.  FILE MANAGEMENT View storage, delete abusive content, restore from
+    trash (where applicable).
+
+7.  SUPPORT View tickets, reply, close, assign priorities.
+
+8.  ANNOUNCEMENTS Create banners, maintenance notices and release notes.
+
+9.  SECURITY Audit logs, login history, role-based permissions.
+
+10. SETTINGS Branding, payment providers, API keys, feature flags.
+
+11. ANALYTICS Revenue, retention, exports, uploads and AI usage trends.
+
+12. ACCEPTANCE CRITERIA Admins can securely monitor, configure and
+    maintain the platform. End of PRD Part 11.

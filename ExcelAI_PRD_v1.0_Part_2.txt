@@ -1,0 +1,77 @@
+EXCELAI PRODUCT REQUIREMENTS DOCUMENT (PRD) Version: 1.0 Part 2 –
+Product Features, User Personas & Functional Requirements
+
+============================================================ 1. PRODUCT
+FEATURES ============================================================
+
+Core Features - AI Spreadsheet Chat - Excel Upload - CSV Upload - PDF to
+Excel - Image to Excel - Automatic AI Analysis - Suggested AI Prompts -
+Spreadsheet Editing through AI - Formula Generator - Formula
+Explanation - Dashboard Generator - Chart Generator - Duplicate
+Detection - Missing Value Detection - Forecasting - Revenue Analysis -
+Clean Entire Sheet - Export (XLSX, CSV, PDF, DOCX, PPTX, PNG)
+
+============================================================ 2. USER
+PERSONAS ============================================================
+
+Student Needs help understanding formulas and completing assignments.
+
+Business Owner Needs sales reports, dashboards, and quick business
+insights.
+
+Accountant Needs invoice processing, GST/tax reports, duplicate
+detection, and clean exports.
+
+Data Analyst Needs data cleaning, visualization, forecasting, and
+exploration.
+
+Teacher Needs attendance, marksheets, and report generation.
+
+============================================================ 3. USER
+JOURNEY ============================================================
+
+1.  User signs up or logs in.
+2.  User reaches Dashboard.
+3.  User uploads Excel, CSV, PDF, or Image.
+4.  AI automatically analyzes the uploaded content.
+5.  AI creates intelligent suggested prompts.
+6.  Suggested prompts appear above the chat input.
+7.  User selects a suggestion or types a custom prompt.
+8.  AI answers in a structured format and updates the spreadsheet when
+    required.
+9.  User exports or saves the final workbook.
+
+============================================================ 4.
+FUNCTIONAL REQUIREMENTS
+============================================================
+
+Authentication - Email/Password - Google Login (future) - Secure
+sessions
+
+Workspace - Native Univer spreadsheet editing - AI sidebar - Chat
+history per workbook - Undo/Redo - Auto-save
+
+AI - Auto-analysis after upload - Context-aware suggestions - Structured
+responses - Explain every AI change
+
+============================================================ 5.
+NON-FUNCTIONAL REQUIREMENTS
+============================================================
+
+-   Fast loading
+-   Responsive design
+-   Accessible UI
+-   Secure authentication
+-   Scalable architecture
+-   Production-ready code
+-   Maintainable modules
+
+============================================================ 6.
+ACCEPTANCE CRITERIA
+============================================================
+
+A user should be able to: - Upload a spreadsheet. - Receive automatic AI
+insights. - Ask questions naturally. - Edit the sheet with AI. -
+Continue editing manually. - Export the finished result.
+
+End of PRD Part 2.
