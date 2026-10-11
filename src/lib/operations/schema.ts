@@ -150,6 +150,8 @@ export type Op = z.infer<typeof opSchema>;
 export const planSchema = z.object({
   message: z.string().max(2000).optional(),
   clarification: z.string().max(1000).optional(),
+  /** 2-4 short answers the user can click when a clarification is needed. */
+  options: z.array(z.string().trim().min(1).max(80)).min(2).max(4).optional().catch(undefined),
   operations: z.array(opSchema).max(6).default([]),
 });
 export type Plan = z.infer<typeof planSchema>;

@@ -13,6 +13,13 @@ const bodySchema = z.object({
   workbookId: z.string().uuid(),
   message: z.string().trim().min(1).max(2000),
   context: contextSchema,
+  attachment: z
+    .object({
+      name: z.string().max(120),
+      kind: z.enum(["table", "text"]),
+      text: z.string().max(6000),
+    })
+    .optional(),
   history: z
     .array(
       z.object({
@@ -81,7 +88,7 @@ export async function POST(req: NextRequest) {
   const messages = [
     { role: "system", content: SYSTEM_PROMPT },
     ...body.history.map((h) => ({ role: h.role, content: h.content })),
-    { role: "user", content: buildUserPrompt(body.message, body.context) },
+    { role: "user", content: buildUserPrompt(body.message, body.context, body.attachment) },
   ];
 
   const baseUrl = (

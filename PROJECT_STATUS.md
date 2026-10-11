@@ -128,3 +128,10 @@ Done (unit-tested, NOT browser-tested):
 - "Last updated": DB trigger now bumps `updated_at` only on a real snapshot change or rename (migration `20261006000000_updated_at_real_changes.sql`); shown in local time via `LocalTime` (hydration-safe).
 - Fixed a type error in `UniverSheet.tsx` (lifecycle behaviour unchanged).
 Not done yet: Priorities 2–6.
+
+## Milestone 5 — Priority 2 (attachments, microphone, clickable options)
+Done (unit-tested, NOT browser-tested):
+- Attach button: .csv/.tsv/.txt/.json up to 1 MB; preview chip; bounded text sent to AI as untrusted data; "Add as new sheet" for tables (deterministic, never overwrites).
+- Images, PDFs, xlsx are rejected with an explicit message (no OCR/PDF reading yet; Priority 5).
+- Microphone: browser SpeechRecognition; appends editable text only, never auto-sends; disabled where unsupported; permission errors shown.
+- Clarifications can carry 2–4 clickable options; invalid options are dropped, not fatal.

@@ -1,6 +1,14 @@
 "use client";
 import { useRef, useState } from "react";
-import { ArrowUp, Loader2, Sparkles, X } from "lucide-react";
+import { ArrowUp, Loader2, Mic, Paperclip, Sparkles, Square, X } from "lucide-react";
+import {
+  ATTACH_ACCEPT,
+  attachmentToOps,
+  parseAttachment,
+  rejectReason,
+  type Attachment,
+} from "@/lib/ai/attachment";
+import { useSpeech } from "./useSpeech";
 import { buildContext } from "@/lib/ai/context";
 import {
   planAll,
@@ -16,6 +24,7 @@ type Msg = {
   text: string;
   table?: Cell[][];
   kind?: "error" | "ok" | "warn";
+  options?: string[];
 };
 type Pending = { ops: Op[]; summaries: string[] };
 
@@ -76,6 +85,22 @@ export function AiPanel({
   const [pending, setPending] = useState<Pending | null>(null);
   const [backup, setBackup] = useState<unknown>(null);
   const end = useRef<HTMLDivElement>(null);
+  const [attach, setAttach] = useState<Attachment | null>(null);
+  const [attachErr, setAttachErr] = useState<string | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const speech = useSpeech((t) =>
+    setInput((cur) => (cur ? cur.replace(/\s*$/, " ") : "") + t),
+  );
+
+  async function onFile(f: File | undefined) {
+    if (!f) return;
+    setAttachErr(null);
+    const bad = rejectReason(f.name, f.type, f.size);
+    if (bad) return setAttachErr(bad);
+    const r = parseAttachment(f.name, await f.text());
+    if (!r.ok) return setAttachErr(r.error);
+    setAttach(r.attachment);
+  }
 
   const push = (m: Msg) => {
     setMsgs((p) => [...p, m]);
@@ -130,10 +155,11 @@ export function AiPanel({
     );
   }
 
-  async function send() {
-    const text = input.trim();
+  async function send(override?: string) {
+    const text = (override ?? input).trim();
     if (!text || busy || !api) return;
-    setInput("");
+    if (override === undefined) setInput("");
+    speech.stop();
     setPending(null);
     push({ role: "user", text });
     setBusy(true);
@@ -146,6 +172,9 @@ export function AiPanel({
           workbookId,
           message: text,
           context: buildContext(model),
+          attachment: attach
+            ? { name: attach.name, kind: attach.kind, text: attach.text }
+            : undefined,
           history: msgs
             .slice(-6)
             .map((m) => ({ role: m.role, content: m.text.slice(0, 500) })),
@@ -167,7 +196,11 @@ export function AiPanel({
         });
       const plan = parsed.data;
       if (plan.clarification)
-        return push({ role: "assistant", text: plan.clarification });
+        return push({
+          role: "assistant",
+          text: plan.clarification,
+          options: plan.options,
+        });
       if (!plan.operations.length)
         return push({
           role: "assistant",
@@ -257,6 +290,24 @@ export function AiPanel({
             >
               <p className="whitespace-pre-wrap">{m.text}</p>
               {m.table && <Table rows={m.table} />}
+              {m.options && (
+                <div
+                  role="group"
+                  aria-label="Suggested answers"
+                  className="mt-2 flex flex-wrap gap-2"
+                >
+                  {m.options.map((o) => (
+                    <button
+                      key={o}
+                      disabled={busy || i !== msgs.length - 1}
+                      onClick={() => void send(o)}
+                      className="rounded-full border border-neutral-300 px-3 py-1 text-xs hover:bg-neutral-50 disabled:opacity-40"
+                    >
+                      {o}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           ),
         )}
@@ -316,6 +367,52 @@ export function AiPanel({
         <div ref={end} />
       </div>
       <div className="p-3">
+        {attach && (
+          <div className="mb-2 rounded-lg border border-neutral-200 bg-neutral-50 p-2 text-xs">
+            <div className="flex items-center justify-between gap-2">
+              <span className="truncate font-medium">
+                <Paperclip size={12} className="mr-1 inline" />
+                {attach.name}
+                {attach.rows ? ` · ${attach.rows.length} rows` : ""}
+                {attach.truncated ? " (truncated)" : ""}
+              </span>
+              <button
+                onClick={() => setAttach(null)}
+                aria-label="Remove attachment"
+                className="rounded p-0.5 hover:bg-neutral-200"
+              >
+                <X size={12} />
+              </button>
+            </div>
+            <pre className="mt-1 max-h-16 overflow-hidden whitespace-pre-wrap text-neutral-600">
+              {attach.text.slice(0, 200)}
+            </pre>
+            {attach.kind === "table" && api && (
+              <button
+                onClick={() => {
+                  const ops = attachmentToOps(
+                    attach,
+                    api.getModel().sheets.map((x) => x.name),
+                  );
+                  if (ops) execute(ops);
+                }}
+                className="mt-1 underline"
+              >
+                Add as new sheet
+              </button>
+            )}
+          </div>
+        )}
+        {(attachErr || speech.error) && (
+          <p role="alert" className="mb-2 text-xs text-red-700">
+            {attachErr ?? speech.error}
+          </p>
+        )}
+        {speech.listening && (
+          <p className="mb-2 text-xs text-neutral-600" role="status">
+            Listening… {speech.interim}
+          </p>
+        )}
         <div className="flex items-end gap-2 rounded-xl border border-neutral-300 p-2 focus-within:border-neutral-950">
           <textarea
             value={input}
@@ -332,6 +429,38 @@ export function AiPanel({
             }}
             className="max-h-32 min-h-10 flex-1 resize-none bg-transparent px-1 text-sm outline-none"
           />
+          <input
+            ref={fileInput}
+            type="file"
+            accept={ATTACH_ACCEPT}
+            hidden
+            onChange={(e) => {
+              void onFile(e.target.files?.[0]);
+              e.target.value = "";
+            }}
+          />
+          <button
+            onClick={() => fileInput.current?.click()}
+            aria-label="Attach a file"
+            title="Attach a CSV, TSV, TXT or JSON file (max 1 MB)"
+            className="grid size-8 place-items-center rounded-full hover:bg-neutral-100"
+          >
+            <Paperclip size={16} />
+          </button>
+          <button
+            onClick={speech.listening ? speech.stop : speech.start}
+            disabled={!speech.supported}
+            aria-label={speech.listening ? "Stop dictation" : "Start dictation"}
+            aria-pressed={speech.listening}
+            title={
+              speech.supported
+                ? "Dictate into the message box. Your browser may send audio to its speech service. Nothing is sent until you press Send."
+                : "Dictation isn't supported in this browser"
+            }
+            className="grid size-8 place-items-center rounded-full hover:bg-neutral-100 disabled:opacity-40"
+          >
+            {speech.listening ? <Square size={14} /> : <Mic size={16} />}
+          </button>
           <button
             onClick={() => void send()}
             disabled={busy || !input.trim() || !api}
