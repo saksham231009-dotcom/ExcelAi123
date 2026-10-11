@@ -1,5 +1,6 @@
 import type { FWorkbook, FWorksheet } from "@univerjs/preset-sheets-core";
 import {
+  colLetter,
   normalizeSheet,
   type Cell,
   type Effect,
@@ -75,6 +76,31 @@ export function applyEffect(wb: FWorkbook, e: Effect): void {
     case "clear":
       sheetOf(wb, e.sheet).getRange(e.r, e.c, e.rows, e.cols).clearContent();
       return;
+    case "condFormat": {
+      const ws = sheetOf(wb, e.sheet);
+      const rows = Math.max(ws.getMaxRows() - 1, 1);
+      const range = ws.getRange(1, e.c, rows, 1).getRange();
+      type RB = ReturnType<ReturnType<FWorksheet["newConditionalFormattingRule"]>["whenCellEmpty"]>;
+      let b: RB = ws.newConditionalFormattingRule().whenCellNotEmpty();
+      const v = e.value;
+      const n = typeof v === "number" ? v : Number(v);
+      switch (e.operator) {
+        case ">": b = b.whenNumberGreaterThan(n); break;
+        case "<": b = b.whenNumberLessThan(n); break;
+        case ">=": b = b.whenNumberGreaterThanOrEqualTo(n); break;
+        case "<=": b = b.whenNumberLessThanOrEqualTo(n); break;
+        case "==": b = Number.isFinite(n) && String(v).trim() !== "" ? b.whenNumberEqualTo(n) : b.whenTextEqualTo(String(v)); break;
+        case "!=": b = Number.isFinite(n) && String(v).trim() !== "" ? b.whenNumberNotEqualTo(n) : b.whenFormulaSatisfied(`=$${colLetter(e.c)}2<>"${String(v).replace(/"/g, '""')}"`); break;
+        case "contains": b = b.whenTextContains(String(v)); break;
+        case "empty": b = b.whenCellEmpty(); break;
+        case "not_empty": b = b.whenCellNotEmpty(); break;
+        default: throw new Error(`Unsupported rule ${e.operator}`);
+      }
+      b = b.setBackground(e.bg);
+      if (e.color) b = b.setFontColor(e.color);
+      ws.addConditionalFormattingRule(b.setRanges([range]).build());
+      return;
+    }
     case "style": {
       const ws = sheetOf(wb, e.sheet);
       const rg = ws.getRange(e.r, e.c, e.rows, e.cols);

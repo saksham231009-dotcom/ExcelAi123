@@ -83,3 +83,24 @@ describe("create_dashboard", () => {
     expect(mutatesWorkbook([op({ op: "data_health" }), op({ op: "explain_formula", cell: "A1" }), op({ op: "suggest_rules" })])).toBe(false);
   });
 });
+
+describe("conditional_format (live rule)", () => {
+  const m = wb(sheet("S", [["Qty"], [1], [-2]]));
+  it("plans a live rule without changing cell values", () => {
+    const p = planAll(m, [op({ op: "conditional_format", column: "Qty", operator: "<", value: 0 })]);
+    expect(p.ok).toBe(true);
+    if (!p.ok) return;
+    expect(p.steps[0].effects[0]).toMatchObject({ t: "condFormat", operator: "<", value: 0, bg: "#FFC7CE" });
+    expect(p.expected.sheets[0].values).toEqual(m.sheets[0].values);
+    expect(p.steps[0].summary).toMatch(/live rule/);
+  });
+  it("rejects missing values, non-numeric thresholds and unknown columns", () => {
+    expect(planOp(m, op({ op: "conditional_format", column: "Qty", operator: ">" })).ok).toBe(false);
+    expect(planOp(m, op({ op: "conditional_format", column: "Qty", operator: ">", value: "abc" })).ok).toBe(false);
+    expect(planOp(m, op({ op: "conditional_format", column: "Nope", operator: "empty" })).ok).toBe(false);
+    expect(planOp(m, op({ op: "conditional_format", column: "Qty", operator: "empty" })).ok).toBe(true);
+  });
+  it("is a mutating operation", () => {
+    expect(mutatesWorkbook([op({ op: "conditional_format", column: "Qty", operator: "empty" })])).toBe(true);
+  });
+});

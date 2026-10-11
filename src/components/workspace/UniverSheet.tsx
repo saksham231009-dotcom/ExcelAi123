@@ -12,6 +12,9 @@ import {
 } from "@univerjs/preset-sheets-core";
 import enUS from "@univerjs/preset-sheets-core/locales/en-US";
 import "@univerjs/preset-sheets-core/lib/index.css";
+import { UniverSheetsConditionalFormattingPreset } from "@univerjs/preset-sheets-conditional-formatting";
+import cfEnUS from "@univerjs/preset-sheets-conditional-formatting/locales/en-US";
+import "@univerjs/preset-sheets-conditional-formatting/lib/index.css";
 
 export type SheetHandle = {
   api: FUniver;
@@ -48,8 +51,11 @@ export default function UniverSheet({
     if (!instance) {
       instance = createUniver({
         locale: LocaleType.EN_US,
-        locales: { [LocaleType.EN_US]: mergeLocales(enUS) },
-        presets: [UniverSheetsCorePreset({ container: el.current })],
+        locales: { [LocaleType.EN_US]: mergeLocales(enUS, cfEnUS) },
+        presets: [
+          UniverSheetsCorePreset({ container: el.current }),
+          UniverSheetsConditionalFormattingPreset(),
+        ],
       });
       univerInstance.current = instance;
     }

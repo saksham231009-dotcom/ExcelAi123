@@ -36,6 +36,7 @@ export const REGISTRY: OpMeta[] = [
   { id: "merge_sheets", category: "structure", signature: "merge_sheets{sheets:[name,name,..],into:newSheetName} (stacks rows, matches columns by header)", mutates: true, canDestroy: false },
   { id: "find_errors", category: "analyze", signature: "find_errors{write_to_sheet?} (formula errors and text inside numeric columns)", mutates: false, canDestroy: false },
   { id: "wrap_iferror", category: "edit", signature: 'wrap_iferror{column,fallback?:"" or number} (wraps that column\'s formulas in IFERROR)', mutates: true, canDestroy: false },
+  { id: "conditional_format", category: "format", signature: 'conditional_format{column,operator:">"|"<"|">="|"<="|"=="|"!="|"contains"|"empty"|"not_empty",value?,background?:"#RRGGBB",font_color?} (LIVE rule that keeps applying as data changes; prefer this over highlight when the user wants rules that stay up to date)', mutates: true, canDestroy: false },
   { id: "explain_formula", category: "analyze", signature: 'explain_formula{cell:"D2"} (plain-language breakdown of one formula)', mutates: false, canDestroy: false },
   { id: "data_health", category: "analyze", signature: "data_health{} (finds blanks, mixed types, inconsistent text, duplicate rows)", mutates: false, canDestroy: false },
   { id: "suggest_rules", category: "analyze", signature: "suggest_rules{} (suggests which values are worth highlighting; does not apply them)", mutates: false, canDestroy: false },

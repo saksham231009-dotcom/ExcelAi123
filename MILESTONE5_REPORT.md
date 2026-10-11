@@ -13,18 +13,20 @@ Modified: import.ts, snapshot.ts, load.ts, export route, workspace page, Workboo
 
 ## 4. The 24 areas (genuine = implemented + unit-tested; browser behaviour NOT TESTED)
 Supported: 1 repetitive entry (set_cells, add_column formulas, fill_blanks, attach CSV/web/PDF/DOCX tables -> new sheet); 2 error verification (find_errors, data_health, post-apply verification); 3 scattered info (merge_sheets); 6 data readiness (data_health, clean_text, remove_duplicates, fill_blanks); 7 dashboards that explain (dashboard "What stands out", static as-of-creation); 11 which rules to create (suggest_rules); 13 broken formulas (find_errors, wrap_iferror); 14 trends (forecast, dashboard trend line); 15 NL questions (query); 16 NL control (19+ validated operations, preview/confirm, undo); 17 messy data (clean_text, find_replace, data_health); 18 duplicates/errors (remove_duplicates, find_errors, data_health); 19 dashboard creation (create_dashboard, live formulas, no charts); 21 automatic problem detection (detect_anomalies, data_health); 22 formula explanations (explain_formula); 23 forecasting (linear only); 24 extraction (CSV/TSV/TXT/JSON, PDF text layer, DOCX, static HTML tables).
-Partial: 4 manual dashboard updates (dashboard numbers are live formulas; category list is fixed at creation); 8 formatting rules (static highlight/format only); 9 important values easy to miss (static highlight); 12 too many rules (suggestions capped at 8).
-NOT supported: 5 disconnected data sources (no live connectors); 10 rules breaking when data changes (no live conditional-formatting rules); 20 recurring reports (no scheduler); charts; seasonal forecasting; OCR/images.
+Also supported (added after the first P6 pass): 8 difficult formatting rules, 9 important values easy to miss, 10 rules breaking when data changes (`conditional_format` creates LIVE Univer rules that keep applying as data changes; saved in the workbook snapshot; verified in headless Chromium: rule colours cells, survives save/restore, reacts to edits); 12 too many rules (suggestions capped at 8).
+Partial: 4 manual dashboard updates (dashboard numbers are live formulas; category list is fixed at creation). Live rules are not exported to .xlsx and not imported from .xlsx.
+NOT supported: 5 disconnected data sources (no live connectors); 20 recurring reports (no scheduler); charts; seasonal forecasting; OCR/images.
 
 ## 5. Extraction formats
 Work: CSV, TSV, TXT, JSON (1 MB); PDF with a text layer (5 MB, 30 pages); DOCX text+tables (5 MB); static HTML tables from public pages. Not: scanned PDFs, images, XLSX as attachment (upload as workbook instead), JavaScript-rendered pages, pages behind login/CAPTCHA.
 
 ## 6. Incomplete and why
-Live conditional formatting, charts, scheduled/recurring reports, data connectors, OCR: need new editor plugins, a scheduler/worker or an OCR/vision service that were not part of the verified stack. Rate limits are per server instance (use a shared store before launch). No CSP header yet (Univer compatibility needs testing).
+Charts, scheduled/recurring reports, data connectors, OCR: need new editor plugins, a scheduler/worker or an OCR/vision service that were not part of the verified stack. Rate limits are per server instance (use a shared store before launch). No CSP header yet (Univer compatibility needs testing).
 
 ## 7. Tests
 PASS (automated, 99 tests): XLSX formatting round trip, formula-heavy/multi-sheet/CSV import, export round trip, trigger behaviour on real Postgres engine (PGlite), registry/schema/prompt sync, attachments, options, analytics, insights, SSRF, HTML tables, PDF, DOCX. Lint, typecheck, production build: PASS.
-NOT TESTED: anything in a real browser (Univer rendering, upload look, dictation, UI buttons, hydration), live Supabase RLS integration (9 skipped), live AI provider calls, /api/scrape and /api/extract inside the running Next server, real network fetches.
+PASS in headless Chromium (temporary harness mounting the real UniverSheet, since removed; no Supabase/auth): imported formatting renders (header fill/bold, column width, freeze pane, merge, date and number formats, formula); live conditional-format rules apply, persist through save/restore and update on edit; dashboard formulas calculate correctly; engine plan matches the real sheet (verify = no mismatches); no console errors.
+NOT TESTED: the full signed-in app in a browser (AI panel UI, dictation, attach/web-import buttons, hydration, export download), live Supabase RLS integration (9 skipped), live AI provider calls, /api/scrape and /api/extract inside the running Next server, real network fetches.
 FAIL: none known.
 
 ## 8. Env vars and migrations

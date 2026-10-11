@@ -161,3 +161,6 @@ Unit-tested in Node; NOT tested inside the running Next server or browser:
 
 ## Milestone 5 — Priority 6 (final)
 See MILESTONE5_REPORT.md for the full report, the 24-area matrix and manual browser tests.
+
+## Milestone 5 — live conditional formatting
+- New op `conditional_format` (live Univer rules via @univerjs/preset-sheets-conditional-formatting 1.0.3). Registered in UniverSheet. Browser-verified in headless Chromium. Not exported to .xlsx; not imported from .xlsx.

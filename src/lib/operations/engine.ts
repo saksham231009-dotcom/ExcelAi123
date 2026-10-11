@@ -37,6 +37,15 @@ export type Effect =
       rows: number;
       cols: number;
     }
+  | {
+      t: "condFormat"; // live rule: no cell values change, so the simulated model is unchanged
+      sheet: string;
+      c: number;
+      operator: string;
+      value?: string | number;
+      bg: string;
+      color?: string;
+    }
   | { t: "createSheet"; name: string }
   | { t: "deleteSheet"; name: string }
   | { t: "renameSheet"; from: string; to: string }
@@ -661,6 +670,23 @@ export function planOp(model: WorkbookModel, op: Op): PlanResult {
       return planFindErrors(model, s, op, analyticsHelpers);
     case "wrap_iferror":
       return planWrapIferror(s, op, analyticsHelpers);
+    case "conditional_format": {
+      const ci = resolveCol(s, op.column);
+      if (typeof ci === "string") return fail(ci);
+      const needsValue = !["empty", "not_empty"].includes(op.operator);
+      if (needsValue && (op.value === undefined || op.value === ""))
+        return fail(`The rule "${op.operator}" needs a value to compare with.`);
+      const numeric = [">", "<", ">=", "<=", "==", "!="].includes(op.operator);
+      if (numeric && toNum(op.value as Cell) === null && op.operator !== "==" && op.operator !== "!=")
+        return fail(`"${op.operator}" needs a number, but got "${op.value}".`);
+      if (s.values.length < 2) return fail(`Sheet "${s.name}" has no data rows.`);
+      return {
+        ok: true,
+        effects: [{ t: "condFormat", sheet: s.name, c: ci, operator: op.operator, value: op.value, bg: op.background, color: op.font_color }],
+        summary: `Add a live rule on "${s.values[0][ci]}": colour cells where value ${op.operator}${needsValue ? ` ${op.value}` : ""} (${op.background}). It updates automatically when the data changes. Rules are saved with the workbook; Excel export does not include them yet.`,
+        destructive: false,
+      };
+    }
     case "explain_formula":
       return planExplainFormula(s, op, analyticsHelpers);
     case "data_health":
@@ -816,6 +842,8 @@ export function applyEffects(
   };
   for (const e of effects) {
     switch (e.t) {
+      case "condFormat":
+        break;
       case "createSheet":
         m.sheets.push({ name: e.name, values: [], formulas: [] });
         break;

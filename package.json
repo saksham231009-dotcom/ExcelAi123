@@ -17,6 +17,7 @@
     "@fontsource-variable/inter": "^5.3.0",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.117.2",
+    "@univerjs/preset-sheets-conditional-formatting": "^1.0.3",
     "@univerjs/preset-sheets-core": "^1.0.3",
     "@univerjs/presets": "^1.0.3",
     "exceljs": "^4.4.0",
