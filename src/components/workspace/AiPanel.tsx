@@ -233,7 +233,19 @@ export function AiPanel({
             : undefined,
           history: msgs
             .slice(-6)
-            .map((m) => ({ role: m.role, content: m.text.slice(0, 500) })),
+            .map((m) => ({
+              role: m.role,
+              content:
+                (m.role === "assistant"
+                  ? m.kind === "ok"
+                    ? "[applied and verified] "
+                    : m.kind === "warn"
+                      ? "[applied, verification found differences] "
+                      : m.kind === "error"
+                        ? "[failed, nothing changed] "
+                        : "[not applied] "
+                  : "") + m.text.slice(0, 480),
+            })),
         }),
       });
       const json = await res.json().catch(() => ({}));

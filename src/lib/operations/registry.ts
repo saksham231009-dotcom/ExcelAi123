@@ -36,6 +36,10 @@ export const REGISTRY: OpMeta[] = [
   { id: "merge_sheets", category: "structure", signature: "merge_sheets{sheets:[name,name,..],into:newSheetName} (stacks rows, matches columns by header)", mutates: true, canDestroy: false },
   { id: "find_errors", category: "analyze", signature: "find_errors{write_to_sheet?} (formula errors and text inside numeric columns)", mutates: false, canDestroy: false },
   { id: "wrap_iferror", category: "edit", signature: 'wrap_iferror{column,fallback?:"" or number} (wraps that column\'s formulas in IFERROR)', mutates: true, canDestroy: false },
+  { id: "explain_formula", category: "analyze", signature: 'explain_formula{cell:"D2"} (plain-language breakdown of one formula)', mutates: false, canDestroy: false },
+  { id: "data_health", category: "analyze", signature: "data_health{} (finds blanks, mixed types, inconsistent text, duplicate rows)", mutates: false, canDestroy: false },
+  { id: "suggest_rules", category: "analyze", signature: "suggest_rules{} (suggests which values are worth highlighting; does not apply them)", mutates: false, canDestroy: false },
+  { id: "create_dashboard", category: "sheet", signature: "create_dashboard{name?,group_by?,value_column?} (new sheet of live totals/averages, a category breakdown and key findings; no charts)", mutates: true, canDestroy: false },
   { id: "query", category: "analyze", signature: 'query{kind:"top_n"|"sum"|"avg"|"min"|"max"|"count"|"summary",column?,group_by?,n?,direction?,write_to_sheet?}', mutates: false, canDestroy: false },
 ];
 
@@ -45,7 +49,7 @@ export const operationsPrompt = () => REGISTRY.map((r) => r.signature).join("\n"
 /** True when applying these ops would change the workbook (anything other than a pure query without write_to_sheet). */
 export function mutatesWorkbook(ops: Op[]): boolean {
   return ops.some((o) =>
-    o.op === "query" || o.op === "detect_anomalies" || o.op === "forecast" || o.op === "find_errors"
+    o.op === "explain_formula" || o.op === "data_health" || o.op === "suggest_rules" ? false : o.op === "query" || o.op === "detect_anomalies" || o.op === "forecast" || o.op === "find_errors"
       ? !!o.write_to_sheet || ("highlight" in o && o.highlight === true)
       : REGISTRY.find((r) => r.id === o.op)?.mutates !== false,
   );

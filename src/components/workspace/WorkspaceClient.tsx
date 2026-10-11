@@ -7,6 +7,7 @@ import {
   Check,
   Download,
   Loader2,
+  Paintbrush,
   Sparkles,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -39,6 +40,8 @@ export default function WorkspaceClient({
   const [saveMsg, setSaveMsg] = useState("");
   const [panel, setPanel] = useState<PanelApi | null>(null);
   const [aiOpen, setAiOpen] = useState(true);
+  const styleUndo = useRef<unknown>(null);
+  const [styled, setStyled] = useState(false);
   const [notesOpen, setNotesOpen] = useState(notes.length > 0);
 
   const doSave = useCallback(async (): Promise<boolean> => {
@@ -131,6 +134,37 @@ export default function WorkspaceClient({
     [],
   );
 
+  /** Optional, reversible: bold + light-grey header row on the active sheet. Restores the exact prior state on undo. */
+  const toggleHeaderStyle = () => {
+    const h = handle.current;
+    if (!h) return;
+    if (styled && styleUndo.current) {
+      h.replace(styleUndo.current);
+      styleUndo.current = null;
+      setStyled(false);
+      onChange();
+      return;
+    }
+    const wb = h.getWorkbook();
+    const model = extractModel(wb);
+    const sheet = model.sheets.find((x) => x.name === model.active);
+    const cols = sheet?.values[0]?.length ?? 0;
+    if (!sheet || !cols) return;
+    styleUndo.current = wb.save();
+    applyEffect(wb, {
+      t: "style",
+      sheet: sheet.name,
+      r: 0,
+      c: 0,
+      rows: 1,
+      cols,
+      bold: true,
+      bg: "#F3F4F6",
+    });
+    setStyled(true);
+    onChange();
+  };
+
   const exportFile = async () => {
     if (await doSave()) {
       const a = document.createElement("a");
@@ -177,6 +211,14 @@ export default function WorkspaceClient({
           </p>
         </div>
         <div className="ml-auto flex gap-2">
+          <button
+            onClick={toggleHeaderStyle}
+            aria-pressed={styled}
+            title="Optional: bold, light-grey header row. Click again to restore the previous look exactly."
+            className="flex items-center gap-2 rounded-lg border border-neutral-200 px-3 py-1.5 text-sm hover:bg-neutral-50"
+          >
+            <Paintbrush size={15} /> {styled ? "Undo header style" : "Style header"}
+          </button>
           <button
             onClick={() => void exportFile()}
             className="flex items-center gap-2 rounded-lg border border-neutral-200 px-3 py-1.5 text-sm hover:bg-neutral-50"

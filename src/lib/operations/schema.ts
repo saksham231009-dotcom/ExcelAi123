@@ -166,6 +166,16 @@ export const opSchema = z.discriminatedUnion("op", [
     column: col,
     fallback: z.union([z.string().max(100), z.number()]).default(""),
   }),
+  z.object({ op: z.literal("explain_formula"), sheet, cell: z.string().min(2).max(10) }),
+  z.object({ op: z.literal("data_health"), sheet }),
+  z.object({ op: z.literal("suggest_rules"), sheet }),
+  z.object({
+    op: z.literal("create_dashboard"),
+    sheet,
+    name: z.string().min(1).max(100).default("Dashboard"),
+    group_by: col.optional(),
+    value_column: col.optional(),
+  }),
   z.object({
     op: z.literal("query"),
     sheet,

@@ -12,6 +12,7 @@ import {
   planWrapIferror,
   type Helpers,
 } from "./analytics";
+import { planCreateDashboard, planDataHealth, planExplainFormula, planSuggestRules } from "./insights";
 import type { Op } from "./schema";
 
 export type Cell = string | number | boolean | null;
@@ -660,6 +661,14 @@ export function planOp(model: WorkbookModel, op: Op): PlanResult {
       return planFindErrors(model, s, op, analyticsHelpers);
     case "wrap_iferror":
       return planWrapIferror(s, op, analyticsHelpers);
+    case "explain_formula":
+      return planExplainFormula(s, op, analyticsHelpers);
+    case "data_health":
+      return planDataHealth(s, analyticsHelpers);
+    case "suggest_rules":
+      return planSuggestRules(s, analyticsHelpers);
+    case "create_dashboard":
+      return planCreateDashboard(model, s, op, analyticsHelpers);
     case "query":
       return planQuery(model, s, op);
   }

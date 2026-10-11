@@ -158,3 +158,6 @@ Unit-tested in Node; NOT tested inside the running Next server or browser:
 - Imported tables are added as a NEW sheet; text starting with = + - @ is prefixed with ' so web/file content can't become formulas.
 - Images: still NOT supported (no OCR).
 - next.config: `microphone=(self)` (was `()`, which blocked dictation); pdfjs-dist and mammoth are server-external packages.
+
+## Milestone 5 — Priority 6 (final)
+See MILESTONE5_REPORT.md for the full report, the 24-area matrix and manual browser tests.
