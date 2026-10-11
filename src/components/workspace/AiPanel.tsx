@@ -17,6 +17,7 @@ import {
   type Step,
   type WorkbookModel,
 } from "@/lib/operations/engine";
+import { mutatesWorkbook } from "@/lib/operations/registry";
 import { planSchema, type Op } from "@/lib/operations/schema";
 
 type Msg = {
@@ -85,6 +86,13 @@ export function AiPanel({
   const [pending, setPending] = useState<Pending | null>(null);
   const [backup, setBackup] = useState<unknown>(null);
   const end = useRef<HTMLDivElement>(null);
+  const [autoApply, setAutoApply] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem("excelai.autoApply") === "1";
+    } catch {
+      return false;
+    }
+  });
   const [attach, setAttach] = useState<Attachment | null>(null);
   const [attachErr, setAttachErr] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -223,6 +231,16 @@ export function AiPanel({
         return push({
           role: "assistant",
           text: "This will make changes that remove or overwrite data. Review and confirm:",
+        });
+      }
+      if (!autoApply && mutatesWorkbook(plan.operations)) {
+        setPending({
+          ops: plan.operations,
+          summaries: dry.steps.map((s) => s.summary),
+        });
+        return push({
+          role: "assistant",
+          text: "Review the proposed changes, then apply or cancel:",
         });
       }
       execute(plan.operations);
@@ -470,7 +488,22 @@ export function AiPanel({
             <ArrowUp size={16} />
           </button>
         </div>
-        <p className="mt-2 text-center text-[11px] text-neutral-500">
+        <label className="mt-2 flex items-center gap-2 text-[11px] text-neutral-600">
+          <input
+            type="checkbox"
+            checked={autoApply}
+            onChange={(e) => {
+              setAutoApply(e.target.checked);
+              try {
+                localStorage.setItem("excelai.autoApply", e.target.checked ? "1" : "0");
+              } catch {
+                /* storage unavailable: the choice just won't persist */
+              }
+            }}
+          />
+          Apply non-destructive changes without asking (you can still undo)
+        </label>
+        <p className="mt-1 text-center text-[11px] text-neutral-500">
           ExcelAI can make mistakes. Check important info.
         </p>
       </div>

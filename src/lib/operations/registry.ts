@@ -1,0 +1,45 @@
+import type { Op } from "./schema";
+
+export type OpId = Op["op"];
+export type OpMeta = {
+  id: OpId;
+  category: "edit" | "structure" | "clean" | "format" | "sheet" | "analyze";
+  /** Prompt signature shown to the AI; the single source of truth for the prompt. */
+  signature: string;
+  /** Changes the workbook (false = read-only answer). */
+  mutates: boolean;
+  /** Can remove or overwrite existing data. The engine decides per plan whether it actually does. */
+  canDestroy: boolean;
+};
+
+/** Every operation the app can execute. Tests guarantee this list, the Zod schema and the engine stay in sync. */
+export const REGISTRY: OpMeta[] = [
+  { id: "set_cells", category: "edit", signature: 'set_cells{range:"A1:B2",values:[[..]]} (strings starting "=" are formulas)', mutates: true, canDestroy: true },
+  { id: "add_column", category: "structure", signature: 'add_column{header,formula?:"=B{row}*C{row}" ({row} = row number),after?:column}', mutates: true, canDestroy: false },
+  { id: "rename_column", category: "structure", signature: "rename_column{column,new_name}", mutates: true, canDestroy: false },
+  { id: "delete_columns", category: "structure", signature: "delete_columns{columns:[..]}", mutates: true, canDestroy: true },
+  { id: "insert_rows", category: "structure", signature: "insert_rows{after_row,count}", mutates: true, canDestroy: false },
+  { id: "delete_rows", category: "structure", signature: "delete_rows{from_row,to_row}", mutates: true, canDestroy: true },
+  { id: "clear_range", category: "edit", signature: "clear_range{range}", mutates: true, canDestroy: true },
+  { id: "sort", category: "structure", signature: 'sort{by,direction:"asc"|"desc"}', mutates: true, canDestroy: false },
+  { id: "remove_duplicates", category: "clean", signature: "remove_duplicates{columns?:[..],ignore_case?:bool}", mutates: true, canDestroy: true },
+  { id: "find_replace", category: "clean", signature: "find_replace{find,replace,column?,match_case?,whole_cell?}", mutates: true, canDestroy: true },
+  { id: "fill_blanks", category: "clean", signature: "fill_blanks{column,value}", mutates: true, canDestroy: false },
+  { id: "clean_text", category: "clean", signature: 'clean_text{column?,mode:"trim"|"lowercase"|"uppercase"|"titlecase"}', mutates: true, canDestroy: true },
+  { id: "format", category: "format", signature: 'format{range?|column?,bold?,background?:"#RRGGBB",font_color?:"#RRGGBB",number_format?,align?:"left"|"center"|"right"}', mutates: true, canDestroy: false },
+  { id: "highlight", category: "format", signature: 'highlight{condition:{column,operator:">"|"<"|">="|"<="|"=="|"!="|"contains"|"empty"|"not_empty",value?},background?:"#RRGGBB"}', mutates: true, canDestroy: false },
+  { id: "create_sheet", category: "sheet", signature: "create_sheet{name}", mutates: true, canDestroy: false },
+  { id: "rename_sheet", category: "sheet", signature: "rename_sheet{from,to}", mutates: true, canDestroy: false },
+  { id: "delete_sheet", category: "sheet", signature: "delete_sheet{name}", mutates: true, canDestroy: true },
+  { id: "query", category: "analyze", signature: 'query{kind:"top_n"|"sum"|"avg"|"min"|"max"|"count"|"summary",column?,group_by?,n?,direction?,write_to_sheet?}', mutates: false, canDestroy: false },
+];
+
+export const OP_IDS = REGISTRY.map((r) => r.id);
+export const operationsPrompt = () => REGISTRY.map((r) => r.signature).join("\n");
+
+/** True when applying these ops would change the workbook (anything other than a pure query without write_to_sheet). */
+export function mutatesWorkbook(ops: Op[]): boolean {
+  return ops.some((o) =>
+    o.op === "query" ? !!o.write_to_sheet : REGISTRY.find((r) => r.id === o.op)?.mutates !== false,
+  );
+}

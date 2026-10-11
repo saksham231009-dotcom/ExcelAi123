@@ -135,3 +135,8 @@ Done (unit-tested, NOT browser-tested):
 - Images, PDFs, xlsx are rejected with an explicit message (no OCR/PDF reading yet; Priority 5).
 - Microphone: browser SpeechRecognition; appends editable text only, never auto-sends; disabled where unsupported; permission errors shown.
 - Clarifications can carry 2–4 clickable options; invalid options are dropped, not fatal.
+
+## Milestone 5 — Priority 3 (AI operation architecture)
+Pipeline (all pre-existing except where marked NEW): AI returns JSON plan -> Zod validation -> deterministic engine plans on a simulated copy -> preview/confirmation -> apply via Univer -> verification against the real sheet -> autosave -> "Undo last AI change".
+- NEW: `src/lib/operations/registry.ts` is the single source of truth for operations; the AI prompt is generated from it; tests fail if registry, schema or prompt drift.
+- NEW: every plan that changes the workbook now shows a preview and asks for confirmation. Opt-out checkbox "Apply non-destructive changes without asking" (per browser). Read-only queries run immediately.

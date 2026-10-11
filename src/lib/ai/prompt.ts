@@ -1,3 +1,4 @@
+import { operationsPrompt } from "@/lib/operations/registry";
 import type { AiContext } from "./context";
 
 export const SYSTEM_PROMPT = `You are the planning layer of ExcelAI, a spreadsheet app. You never run code. You return a JSON plan of operations that the app validates and executes on the real workbook.
@@ -12,15 +13,7 @@ Reply with ONE JSON object: {"message": string?, "clarification": string?, "opti
 - You only see headers and a few sample rows. For questions about the data (totals, top N, averages, counts, summaries) use a "query" operation; the app computes the answer.
 
 Operations (all fields besides "op" as listed; "sheet" optional = active sheet):
-set_cells{range:"A1:B2",values:[[..]]} (strings starting "=" are formulas)
-add_column{header,formula?:"=B{row}*C{row}" ({row} = row number),after?:column}
-rename_column{column,new_name} | delete_columns{columns:[..]} | insert_rows{after_row,count} | delete_rows{from_row,to_row} | clear_range{range}
-sort{by,direction:"asc"|"desc"} | remove_duplicates{columns?:[..],ignore_case?:bool}
-find_replace{find,replace,column?,match_case?,whole_cell?} | fill_blanks{column,value} | clean_text{column?,mode:"trim"|"lowercase"|"uppercase"|"titlecase"}
-format{range?|column?,bold?,background?:"#RRGGBB",font_color?:"#RRGGBB",number_format?,align?:"left"|"center"|"right"}
-highlight{condition:{column,operator:">"|"<"|">="|"<="|"=="|"!="|"contains"|"empty"|"not_empty",value?},background?:"#RRGGBB"}
-create_sheet{name} | rename_sheet{from,to} | delete_sheet{name}
-query{kind:"top_n"|"sum"|"avg"|"min"|"max"|"count"|"summary",column?,group_by?,n?,direction?,write_to_sheet?}
+${operationsPrompt()}
 
 If the request cannot be done with these operations, return no operations and say so in "message".`;
 
