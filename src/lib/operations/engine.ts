@@ -4,6 +4,14 @@
  * applyEffects() simulates them, and verifyModels() compares the simulation with the real sheet.
  * The AI never executes anything; it only proposes Ops.
  */
+import {
+  planDetectAnomalies,
+  planFindErrors,
+  planForecast,
+  planMergeSheets,
+  planWrapIferror,
+  type Helpers,
+} from "./analytics";
 import type { Op } from "./schema";
 
 export type Cell = string | number | boolean | null;
@@ -234,6 +242,8 @@ function groupRuns(sortedAsc: number[]): [number, number][] {
   return runs;
 }
 
+const analyticsHelpers: Helpers = { resolveCol, toNum, isBlank, colLetter };
+
 // ---------- planning ----------
 export function planOp(model: WorkbookModel, op: Op): PlanResult {
   if (op.op === "create_sheet") {
@@ -276,6 +286,8 @@ export function planOp(model: WorkbookModel, op: Op): PlanResult {
       destructive: true,
     };
   }
+
+  if (op.op === "merge_sheets") return planMergeSheets(model, op);
 
   const s = findSheet(model, "sheet" in op ? op.sheet : undefined);
   if (typeof s === "string") return fail(s);
@@ -640,6 +652,14 @@ export function planOp(model: WorkbookModel, op: Op): PlanResult {
         destructive: false,
       };
     }
+    case "detect_anomalies":
+      return planDetectAnomalies(model, s, op, analyticsHelpers);
+    case "forecast":
+      return planForecast(model, s, op, analyticsHelpers);
+    case "find_errors":
+      return planFindErrors(model, s, op, analyticsHelpers);
+    case "wrap_iferror":
+      return planWrapIferror(s, op, analyticsHelpers);
     case "query":
       return planQuery(model, s, op);
   }

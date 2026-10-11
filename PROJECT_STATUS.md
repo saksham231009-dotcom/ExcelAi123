@@ -140,3 +140,13 @@ Done (unit-tested, NOT browser-tested):
 Pipeline (all pre-existing except where marked NEW): AI returns JSON plan -> Zod validation -> deterministic engine plans on a simulated copy -> preview/confirmation -> apply via Univer -> verification against the real sheet -> autosave -> "Undo last AI change".
 - NEW: `src/lib/operations/registry.ts` is the single source of truth for operations; the AI prompt is generated from it; tests fail if registry, schema or prompt drift.
 - NEW: every plan that changes the workbook now shows a preview and asks for confirmation. Opt-out checkbox "Apply non-destructive changes without asking" (per browser). Read-only queries run immediately.
+
+## Milestone 5 — Priority 4 (core intelligence)
+New deterministic operations (computed by the app, not the AI; unit-tested, NOT browser-tested):
+- `detect_anomalies` (IQR or z-score; optional static highlight; optional result sheet)
+- `forecast` (straight-line trend over rows in order; reports R² and limits)
+- `merge_sheets` (stack sheets by header name into a NEW sheet; originals untouched)
+- `find_errors` (formula errors, text inside numeric columns)
+- `wrap_iferror` (wrap a column's formulas in IFERROR with a chosen fallback)
+Existing ops cover: data entry (set_cells), cleaning (clean_text, find_replace, fill_blanks), duplicates, sorting, formatting, static highlight, Q&A/aggregation (query), formula columns (add_column).
+NOT implemented (do not claim): live conditional-formatting rules, charts, dashboards, recurring/scheduled reports, formula explanation beyond the AI's text answer, seasonal forecasting, date-aware trends, PDF/image extraction (P5), web scraping (P5).

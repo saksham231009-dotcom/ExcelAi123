@@ -31,6 +31,11 @@ export const REGISTRY: OpMeta[] = [
   { id: "create_sheet", category: "sheet", signature: "create_sheet{name}", mutates: true, canDestroy: false },
   { id: "rename_sheet", category: "sheet", signature: "rename_sheet{from,to}", mutates: true, canDestroy: false },
   { id: "delete_sheet", category: "sheet", signature: "delete_sheet{name}", mutates: true, canDestroy: true },
+  { id: "detect_anomalies", category: "analyze", signature: 'detect_anomalies{column,method?:"iqr"|"zscore",threshold?,highlight?:bool,write_to_sheet?}', mutates: false, canDestroy: false },
+  { id: "forecast", category: "analyze", signature: "forecast{column,periods?:1-60,write_to_sheet?} (straight-line trend over rows in order)", mutates: false, canDestroy: false },
+  { id: "merge_sheets", category: "structure", signature: "merge_sheets{sheets:[name,name,..],into:newSheetName} (stacks rows, matches columns by header)", mutates: true, canDestroy: false },
+  { id: "find_errors", category: "analyze", signature: "find_errors{write_to_sheet?} (formula errors and text inside numeric columns)", mutates: false, canDestroy: false },
+  { id: "wrap_iferror", category: "edit", signature: 'wrap_iferror{column,fallback?:"" or number} (wraps that column\'s formulas in IFERROR)', mutates: true, canDestroy: false },
   { id: "query", category: "analyze", signature: 'query{kind:"top_n"|"sum"|"avg"|"min"|"max"|"count"|"summary",column?,group_by?,n?,direction?,write_to_sheet?}', mutates: false, canDestroy: false },
 ];
 
@@ -40,6 +45,8 @@ export const operationsPrompt = () => REGISTRY.map((r) => r.signature).join("\n"
 /** True when applying these ops would change the workbook (anything other than a pure query without write_to_sheet). */
 export function mutatesWorkbook(ops: Op[]): boolean {
   return ops.some((o) =>
-    o.op === "query" ? !!o.write_to_sheet : REGISTRY.find((r) => r.id === o.op)?.mutates !== false,
+    o.op === "query" || o.op === "detect_anomalies" || o.op === "forecast" || o.op === "find_errors"
+      ? !!o.write_to_sheet || ("highlight" in o && o.highlight === true)
+      : REGISTRY.find((r) => r.id === o.op)?.mutates !== false,
   );
 }

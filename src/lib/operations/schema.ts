@@ -135,6 +135,38 @@ export const opSchema = z.discriminatedUnion("op", [
   }),
   z.object({ op: z.literal("delete_sheet"), name: z.string().min(1).max(100) }),
   z.object({
+    op: z.literal("detect_anomalies"),
+    sheet,
+    column: col,
+    method: z.enum(["iqr", "zscore"]).default("iqr"),
+    threshold: z.number().min(0.5).max(10).optional(),
+    highlight: z.boolean().default(false),
+    write_to_sheet: z.string().min(1).max(100).optional(),
+  }),
+  z.object({
+    op: z.literal("forecast"),
+    sheet,
+    column: col,
+    periods: z.number().int().min(1).max(60).default(3),
+    write_to_sheet: z.string().min(1).max(100).optional(),
+  }),
+  z.object({
+    op: z.literal("merge_sheets"),
+    sheets: z.array(z.string().min(1).max(100)).min(2).max(10),
+    into: z.string().min(1).max(100),
+  }),
+  z.object({
+    op: z.literal("find_errors"),
+    sheet,
+    write_to_sheet: z.string().min(1).max(100).optional(),
+  }),
+  z.object({
+    op: z.literal("wrap_iferror"),
+    sheet,
+    column: col,
+    fallback: z.union([z.string().max(100), z.number()]).default(""),
+  }),
+  z.object({
     op: z.literal("query"),
     sheet,
     kind: z.enum(["top_n", "sum", "avg", "min", "max", "count", "summary"]),
