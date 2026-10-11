@@ -1,11 +1,13 @@
 "use client";
 import { useRef, useState } from "react";
-import { ArrowUp, Loader2, Mic, Paperclip, Sparkles, Square, X } from "lucide-react";
+import { ArrowUp, Globe, Loader2, Mic, Paperclip, Sparkles, Square, X } from "lucide-react";
 import {
   ATTACH_ACCEPT,
   attachmentToOps,
   parseAttachment,
   rejectReason,
+  tablesToAttachment,
+  textToAttachment,
   type Attachment,
 } from "@/lib/ai/attachment";
 import { useSpeech } from "./useSpeech";
@@ -100,11 +102,57 @@ export function AiPanel({
     setInput((cur) => (cur ? cur.replace(/\s*$/, " ") : "") + t),
   );
 
+  const [webOpen, setWebOpen] = useState(false);
+  const [webUrl, setWebUrl] = useState("");
+  async function importWeb() {
+    const url = webUrl.trim();
+    if (!url || busy) return;
+    setAttachErr(null);
+    setBusy(true);
+    try {
+      const res = await fetch("/api/scrape", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const j = await res.json().catch(() => ({}));
+      if (!res.ok) return setAttachErr(j.error ?? "Couldn't read that page.");
+      setAttach(tablesToAttachment(`${j.source}.csv`, j.tables));
+      setWebOpen(false);
+      setWebUrl("");
+    } catch {
+      setAttachErr("Can't reach the server. Check your connection.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function onFile(f: File | undefined) {
     if (!f) return;
     setAttachErr(null);
     const bad = rejectReason(f.name, f.type, f.size);
     if (bad) return setAttachErr(bad);
+    const ext = f.name.toLowerCase().split(".").pop();
+    if (ext === "pdf" || ext === "docx") {
+      setBusy(true);
+      try {
+        const fd = new FormData();
+        fd.append("file", f);
+        const res = await fetch("/api/extract", { method: "POST", body: fd });
+        const j = await res.json().catch(() => ({}));
+        if (!res.ok) return setAttachErr(j.error ?? "That file couldn't be read.");
+        setAttach(
+          j.tables?.length
+            ? tablesToAttachment(f.name, j.tables)
+            : textToAttachment(f.name, j.text ?? "", !!j.truncated),
+        );
+      } catch {
+        setAttachErr("Can't reach the server. Check your connection.");
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
     const r = parseAttachment(f.name, await f.text());
     if (!r.ok) return setAttachErr(r.error);
     setAttach(r.attachment);
@@ -402,6 +450,24 @@ export function AiPanel({
                 <X size={12} />
               </button>
             </div>
+            {attach.alternatives && (
+              <select
+                aria-label="Choose which table to use"
+                className="mt-1 w-full rounded border border-neutral-300 bg-white p-1"
+                onChange={(e) =>
+                  setAttach(
+                    tablesToAttachment(attach.name, attach.alternatives!, Number(e.target.value)),
+                  )
+                }
+              >
+                {attach.alternatives.map((t, i) => (
+                  <option key={i} value={i}>
+                    Table {i + 1}
+                    {t.caption ? `: ${t.caption.slice(0, 30)}` : ""} ({t.rows.length} rows)
+                  </option>
+                ))}
+              </select>
+            )}
             <pre className="mt-1 max-h-16 overflow-hidden whitespace-pre-wrap text-neutral-600">
               {attach.text.slice(0, 200)}
             </pre>
@@ -420,6 +486,29 @@ export function AiPanel({
               </button>
             )}
           </div>
+        )}
+        {webOpen && (
+          <form
+            className="mb-2 flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void importWeb();
+            }}
+          >
+            <input
+              value={webUrl}
+              onChange={(e) => setWebUrl(e.target.value)}
+              placeholder="https://example.com/page-with-a-table"
+              aria-label="Web page address"
+              className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-2 py-1 text-xs"
+            />
+            <button
+              disabled={busy || !webUrl.trim()}
+              className="rounded-lg bg-neutral-950 px-3 py-1 text-xs text-white disabled:opacity-40"
+            >
+              Read
+            </button>
+          </form>
         )}
         {(attachErr || speech.error) && (
           <p role="alert" className="mb-2 text-xs text-red-700">
@@ -458,9 +547,18 @@ export function AiPanel({
             }}
           />
           <button
+            onClick={() => setWebOpen((o) => !o)}
+            aria-label="Import a table from a web page"
+            aria-expanded={webOpen}
+            title="Import a table from a public web page (static HTML tables only)"
+            className="grid size-8 place-items-center rounded-full hover:bg-neutral-100"
+          >
+            <Globe size={16} />
+          </button>
+          <button
             onClick={() => fileInput.current?.click()}
             aria-label="Attach a file"
-            title="Attach a CSV, TSV, TXT or JSON file (max 1 MB)"
+            title="Attach a CSV, TSV, TXT, JSON (1 MB), or PDF/DOCX (5 MB) file"
             className="grid size-8 place-items-center rounded-full hover:bg-neutral-100"
           >
             <Paperclip size={16} />

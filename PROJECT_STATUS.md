@@ -150,3 +150,11 @@ New deterministic operations (computed by the app, not the AI; unit-tested, NOT 
 - `wrap_iferror` (wrap a column's formulas in IFERROR with a chosen fallback)
 Existing ops cover: data entry (set_cells), cleaning (clean_text, find_replace, fill_blanks), duplicates, sorting, formatting, static highlight, Q&A/aggregation (query), formula columns (add_column).
 NOT implemented (do not claim): live conditional-formatting rules, charts, dashboards, recurring/scheduled reports, formula explanation beyond the AI's text answer, seasonal forecasting, date-aware trends, PDF/image extraction (P5), web scraping (P5).
+
+## Milestone 5 — Priority 5 (import, extraction, web)
+Unit-tested in Node; NOT tested inside the running Next server or browser:
+- Web page import (`/api/scrape`, globe button): static HTML tables only. SSRF controls: http/https only, ports 80/443, no credentials, localhost/.local/.internal blocked, ALL DNS answers must be public (v4+v6, mapped addresses), connection-time DNS re-validation (anti-rebinding), manual redirects re-validated per hop (max 4), 10 s timeout, 2 MB cap, HTML content-type only, login/bot blocks (401/403/429) and CAPTCHA pages are reported, never bypassed. Auth required, 8 requests/min per instance. No JavaScript rendering.
+- PDF (text layer only, ≤30 pages) and DOCX (text + tables) via `/api/extract` (5 MB, zip-bomb check). Scanned PDFs are refused with an OCR-not-available message.
+- Imported tables are added as a NEW sheet; text starting with = + - @ is prefixed with ' so web/file content can't become formulas.
+- Images: still NOT supported (no OCR).
+- next.config: `microphone=(self)` (was `()`, which blocked dictation); pdfjs-dist and mammoth are server-external packages.

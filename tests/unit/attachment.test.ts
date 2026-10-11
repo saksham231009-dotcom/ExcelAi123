@@ -5,9 +5,10 @@ import { planAll, type WorkbookModel } from "@/lib/operations/engine";
 import { planSchema } from "@/lib/operations/schema";
 
 describe("attachments", () => {
-  it("rejects images, PDFs and xlsx honestly; accepts text files", () => {
+  it("rejects images and xlsx honestly; accepts text files", () => {
     expect(rejectReason("a.png", "image/png", 10)).toMatch(/OCR/);
-    expect(rejectReason("a.pdf", "application/pdf", 10)).toMatch(/PDF/);
+    expect(rejectReason("a.pdf", "application/pdf", 10)).toBeNull();
+    expect(rejectReason("a.pdf", "application/pdf", 6_000_000)).toMatch(/5 MB/);
     expect(rejectReason("a.xlsx", "", 10)).toMatch(/dashboard/);
     expect(rejectReason("a.exe", "", 10)).toMatch(/Unsupported/);
     expect(rejectReason("a.csv", "text/csv", 2_000_000)).toMatch(/1 MB/);
