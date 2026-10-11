@@ -119,3 +119,12 @@ Known: npm audit reports 2 moderate advisories via exceljs -> uuid (buffer bound
 ## Phase 2 remaining / Phase 3 remaining
 
 Phase 2: more operations, charts/dashboards, imports, forecasting. Phase 3: full E2E + load tests, rate limiting store, custom SMTP, payments, legal review, deployment.
+
+## Milestone 5 — Priority 1 (rendering + timestamp)
+Done (unit-tested, NOT browser-tested):
+- XLSX import now preserves: values, formulas (+cached results), dates (serial + format), number formats, fonts, fills, borders, alignment/wrap, merges, column widths, row heights, freeze panes, gridlines, tab colour, hidden rows/cols/sheets.
+- Unsupported features are reported in a dismissible banner (conditional formatting, data validation, images, filters, comments, rich text, hyperlinks, charts/pivots) and stored in `workbooks.import_notes`.
+- Export (.xlsx) now writes styles, merges, sizes, freeze panes and real dates.
+- "Last updated": DB trigger now bumps `updated_at` only on a real snapshot change or rename (migration `20261006000000_updated_at_real_changes.sql`); shown in local time via `LocalTime` (hydration-safe).
+- Fixed a type error in `UniverSheet.tsx` (lifecycle behaviour unchanged).
+Not done yet: Priorities 2–6.

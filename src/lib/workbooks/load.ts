@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { BUCKET } from "./validate";
-import { ImportError, importToSnapshot } from "./import";
+import { ImportError, importWorkbook } from "./import";
 import { blankSnapshot } from "./snapshot";
 
 export type WorkbookRow = {
@@ -10,16 +10,24 @@ export type WorkbookRow = {
   storage_path: string | null;
   snapshot: unknown | null;
   snapshot_version: number;
+  import_notes?: string[] | null;
 };
 
 /** Returns the saved snapshot, creating it on first open (blank sheet, or import of the uploaded file). */
 export async function ensureSnapshot(
   supabase: SupabaseClient,
   wb: WorkbookRow,
-): Promise<{ snapshot: unknown; version: number } | { error: string }> {
+): Promise<
+  { snapshot: unknown; version: number; notes?: string[] } | { error: string }
+> {
   if (wb.snapshot)
-    return { snapshot: wb.snapshot, version: wb.snapshot_version };
+    return {
+      snapshot: wb.snapshot,
+      version: wb.snapshot_version,
+      notes: wb.import_notes ?? [],
+    };
   let snap;
+  let notes: string[] = [];
   if (wb.file_type === "blank" || !wb.storage_path)
     snap = blankSnapshot(wb.id, wb.name);
   else {
@@ -29,12 +37,14 @@ export async function ensureSnapshot(
     if (error || !data)
       return { error: "The uploaded file couldn't be loaded from storage." };
     try {
-      snap = await importToSnapshot(
+      const imported = await importWorkbook(
         wb.id,
         wb.name,
         wb.file_type,
         await data.arrayBuffer(),
       );
+      snap = imported.snapshot;
+      notes = imported.warnings;
     } catch (e) {
       return {
         error:
@@ -46,7 +56,7 @@ export async function ensureSnapshot(
   }
   const { data: saved, error } = await supabase
     .from("workbooks")
-    .update({ snapshot: snap, snapshot_version: 1 })
+    .update({ snapshot: snap, snapshot_version: 1, import_notes: notes })
     .eq("id", wb.id)
     .is("snapshot", null)
     .select("snapshot_version");
@@ -66,5 +76,5 @@ export async function ensureSnapshot(
       return { snapshot: again.snapshot, version: again.snapshot_version };
     return { error: "Couldn't open the workbook. Please reload." };
   }
-  return { snapshot: snap, version: 1 };
+  return { snapshot: snap, version: 1, notes };
 }

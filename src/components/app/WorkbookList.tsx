@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { FileSpreadsheet, FileText, FolderOpen } from "lucide-react";
 import { RowActions } from "@/components/app/RowActions";
-import { formatBytes, timeAgo } from "@/lib/workbooks/validate";
+import { formatBytes } from "@/lib/workbooks/validate";
+import LocalTime from "./LocalTime";
 
 export type WorkbookRow = {
   id: string;
@@ -147,7 +148,7 @@ export function WorkbookList({
                       </span>
                     </Link>
                   </td>
-                  <td className="text-neutral-600">{timeAgo(r.updated_at)}</td>
+                  <td className="text-neutral-600"><LocalTime iso={r.updated_at} /></td>
                   <td className="text-neutral-600">
                     {r.file_type === "blank" ? "—" : formatBytes(r.size_bytes)}
                   </td>

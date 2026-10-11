@@ -15,13 +15,13 @@ export default async function Workspace(props: PageProps<"/workspace/[id]">) {
   // Row Level Security returns nothing for workbooks the user doesn't own.
   const { data, error } = await supabase
     .from("workbooks")
-    .select("id, name, file_type, storage_path, snapshot, snapshot_version")
+    .select("id, name, file_type, storage_path, snapshot, snapshot_version, import_notes")
     .eq("id", id)
     .maybeSingle();
   if (!error && !data) notFound();
 
   const failure = error
-    ? "Couldn't load this workbook. If you haven't yet, run the latest database migration (supabase/migrations/20261004000000_workbook_snapshot.sql)."
+    ? "Couldn't load this workbook. If you haven't yet, run the latest database migration (supabase/migrations/20261006000000_updated_at_real_changes.sql)."
     : null;
   const opened =
     !failure && data
@@ -54,6 +54,7 @@ export default async function Workspace(props: PageProps<"/workspace/[id]">) {
       name={data.name}
       snapshot={opened.snapshot}
       version={opened.version}
+      notes={opened.notes ?? []}
     />
   );
 }

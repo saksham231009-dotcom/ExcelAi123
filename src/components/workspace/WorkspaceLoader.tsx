@@ -17,6 +17,7 @@ export default function WorkspaceLoader(props: {
   name: string;
   snapshot: unknown;
   version: number;
+  notes?: string[];
 }) {
   return <WorkspaceClient {...props} />;
 }

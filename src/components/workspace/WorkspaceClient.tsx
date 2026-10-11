@@ -22,11 +22,13 @@ export default function WorkspaceClient({
   name,
   snapshot,
   version,
+  notes = [],
 }: {
   id: string;
   name: string;
   snapshot: unknown;
   version: number;
+  notes?: string[];
 }) {
   const handle = useRef<SheetHandle | null>(null);
   const ver = useRef(version);
@@ -37,6 +39,7 @@ export default function WorkspaceClient({
   const [saveMsg, setSaveMsg] = useState("");
   const [panel, setPanel] = useState<PanelApi | null>(null);
   const [aiOpen, setAiOpen] = useState(true);
+  const [notesOpen, setNotesOpen] = useState(notes.length > 0);
 
   const doSave = useCallback(async (): Promise<boolean> => {
     const h = handle.current;
@@ -190,6 +193,30 @@ export default function WorkspaceClient({
           )}
         </div>
       </div>
+      {notesOpen && notes.length > 0 && (
+        <div
+          role="status"
+          className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <p className="font-medium">
+              Some features in your file couldn&apos;t be imported:
+            </p>
+            <button
+              onClick={() => setNotesOpen(false)}
+              className="underline"
+              aria-label="Dismiss import notes"
+            >
+              Dismiss
+            </button>
+          </div>
+          <ul className="mt-1 list-disc space-y-0.5 pl-5">
+            {notes.map((n) => (
+              <li key={n}>{n}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="flex min-h-0 flex-1 gap-3">
         <div className="min-w-0 flex-1 overflow-hidden rounded-xl border border-neutral-200">
           <UniverSheet

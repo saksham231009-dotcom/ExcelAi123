@@ -53,22 +53,24 @@ export default function UniverSheet({
       });
       univerInstance.current = instance;
     }
-    let wb = workbook.current;
-    if (!wb) {
-      wb = instance.univerAPI.createWorkbook(initial.current as never);
-      workbook.current = wb;
-    }
+    const api = instance.univerAPI;
+    const holder: { wb: FWorkbook } = {
+      wb:
+        workbook.current ??
+        api.createWorkbook(initial.current as never),
+    };
+    workbook.current = holder.wb;
     const sub = instance.univerAPI.addEvent(
       instance.univerAPI.Event.CommandExecuted,
       () => cb.current.onChange(),
     );
     cb.current.onReady({
       api: instance.univerAPI,
-      getWorkbook: () => wb,
+      getWorkbook: () => holder.wb,
       replace: (snap) => {
-        instance.univerAPI.disposeUnit(wb.getId());
-        wb = instance.univerAPI.createWorkbook(snap as never);
-        workbook.current = wb;
+        api.disposeUnit(holder.wb.getId());
+        holder.wb = api.createWorkbook(snap as never);
+        workbook.current = holder.wb;
       },
     });
     return () => {

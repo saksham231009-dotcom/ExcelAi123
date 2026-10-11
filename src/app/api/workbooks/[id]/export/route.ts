@@ -1,18 +1,11 @@
-import ExcelJS from "exceljs";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
-
-type UCell = { v?: string | number | boolean | null; f?: string };
-type USheet = {
-  name: string;
-  cellData?: Record<string, Record<string, UCell>>;
-};
-type Snap = { sheetOrder?: string[]; sheets?: Record<string, USheet> };
+import { exportSnapshot, type Snap } from "@/lib/workbooks/export";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** Exports the last SAVED state of a workbook as .xlsx (values and formulas; styles are not exported yet). */
+/** Exports the last SAVED state of a workbook as .xlsx (values, formulas, styles, merges, sizes, freeze panes). */
 export async function GET(
   _req: NextRequest,
   ctx: RouteContext<"/api/workbooks/[id]/export">,
@@ -38,25 +31,7 @@ export async function GET(
     return NextResponse.json({ error: "Workbook not found." }, { status: 404 });
 
   const snap = wb.snapshot as Snap;
-  const out = new ExcelJS.Workbook();
-  for (const sid of snap.sheetOrder ?? Object.keys(snap.sheets ?? {})) {
-    const s = snap.sheets?.[sid];
-    if (!s) continue;
-    const ws = out.addWorksheet(
-      s.name.slice(0, 31).replace(/[\\/?*[\]:]/g, "_"),
-    );
-    for (const [r, row] of Object.entries(s.cellData ?? {})) {
-      for (const [c, cell] of Object.entries(row)) {
-        const target = ws.getCell(Number(r) + 1, Number(c) + 1);
-        if (cell.f)
-          target.value = {
-            formula: cell.f.replace(/^=/, ""),
-            result: cell.v ?? undefined,
-          } as ExcelJS.CellFormulaValue;
-        else if (cell.v !== undefined && cell.v !== null) target.value = cell.v;
-      }
-    }
-  }
+  const out = exportSnapshot(snap);
   const buf = await out.xlsx.writeBuffer();
   const safe = wb.name.replace(/[^\w\- ]+/g, "_").slice(0, 80) || "workbook";
   return new NextResponse(buf as ArrayBuffer, {
